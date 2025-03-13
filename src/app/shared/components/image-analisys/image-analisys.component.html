@@ -1,0 +1,52 @@
+<div class="row h-100">
+  <div class="col-12 d-flex align-items-center">
+    <input
+      type="range"
+      [(ngModel)]="zoom"
+      [min]="50"
+      [max]="500"
+      [step]="1"
+      class="form-control-range"
+      id="formControlRangeTop"
+      name="zoom"
+    >
+  </div>
+  <div class="col">
+    <!--            <app-image-analisys></app-image-analisys>-->
+
+    <div id="img-analysis" appOffsideAnalysis>
+      <img
+        [src]="image"
+        alt="analisys"
+        [appImageControls]="zoom"
+        [scrollX]="scrollX"
+        [scrollY]="scrollY"
+      >
+    </div>
+  </div>
+  <div class="col d-flex justify-content-center" style="max-width: 80px">
+    <input
+      type="range"
+      class="form-control-range"
+      id="formControlRangeRight"
+      orient="vertical"
+      name="scrollY"
+      [(ngModel)]="scrollY"
+      [min]="1"
+      [max]="100"
+      [step]="1"
+    >
+  </div>
+  <div class="col-12 d-flex align-items-center">
+    <input
+      type="range"
+      class="form-control-range"
+      id="formControlRangeBottom"
+      name="scrollX"
+      [(ngModel)]="scrollX"
+      [min]="1"
+      [max]="100"
+      [step]="1"
+    >
+  </div>
+</div>
