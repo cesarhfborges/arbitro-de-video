@@ -20,17 +20,18 @@ export class ImageControlsDirective implements OnChanges {
 
   private applyTransform() {
     const scaleValue = this.zoomLevel / 100;
-    const translateX = (this.scrollX - 50) * 2;
-    const translateY = (this.scrollY - 50) * 2;
-
+    // const translateX = this.scrollX;
+    // const translateY = this.scrollY;
     this.renderer.setStyle(
       this.el.nativeElement,
       'transform',
-      `scale(${scaleValue}) translate(${translateX}%, ${translateY}%)`
+      `scale(${scaleValue})`
     );
+    this.renderer.setStyle(this.el.nativeElement, 'top', `${this.scrollY}%`);
+    this.renderer.setStyle(this.el.nativeElement, 'left', `${this.scrollX}%`);
     this.renderer.setStyle(this.el.nativeElement, 'transform-origin', 'center');
-    this.renderer.setStyle(this.el.nativeElement, 'max-width', '100%');
-    this.renderer.setStyle(this.el.nativeElement, 'max-height', '100%');
+    // this.renderer.setStyle(this.el.nativeElement, 'max-width', '100%');
+    // this.renderer.setStyle(this.el.nativeElement, 'max-height', '100%');
     this.renderer.setStyle(this.el.nativeElement, 'object-fit', 'contain');
     this.renderer.setStyle(this.el.nativeElement, 'overflow', 'hidden');
   }

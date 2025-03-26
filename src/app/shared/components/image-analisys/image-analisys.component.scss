@@ -27,9 +27,34 @@
 input[type=range][orient=vertical]
 {
   writing-mode: vertical-lr;
-  direction: rtl;
-  //width: 8px;
-  //height: 100%;
-  //padding: 0 5px;
+  height: unset;
+  width: 16px;
+  rotate: 180deg;
+
+  //&::-webkit-slider-runnable-track {
+  //  /* border-radius: 16px; */
+  //  background: red;
+  //  width: 9px;
+  //  left: 9px;
+  //}
+  //&::-webkit-slider-thumb {
+  //  /* removing default appearance */
+  //  -webkit-appearance: none;
+  //  appearance: none;
+  //  //left: 50%;
+  //  /* creating a custom design */
+  //  //height: 15px;
+  //  //width: 15px;
+  //  //background-color: #fff;
+  //  //border-radius: 50%;
+  //  border: 2px solid #f50;
+  //  /*  slider progress trick  */
+  //  //box-shadow: -407px 0 0 400px #f50;
+  //}
+
+//direction: rtl;
+//width: 8px;
+//height: 100%;
+//padding: 0 5px;
 }
 

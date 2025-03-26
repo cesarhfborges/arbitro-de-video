@@ -10,13 +10,13 @@ export class ImageAnalisysComponent implements OnInit {
   @Input() image: string;
 
   zoom: number = 100;
-  scrollX: number = 50;
-  scrollY: number = 50;
+  scrollX: number = 0;
+  scrollY: number = 0;
 
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.image);
+    // console.log(this.image);
   }
 
 }

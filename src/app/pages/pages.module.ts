@@ -6,21 +6,23 @@ import {CoreModule} from '../core/core.module';
 import {PagesRoutingModule} from './pages-routing.module';
 import {HomeComponent} from './home/home.component';
 import {LayoutComponent} from './layout.component';
-import {AnaliseImagemComponent} from './analise-imagem/analise-imagem.component';
+import {ReactiveFormsModule} from '@angular/forms';
+import {NgIconComponent} from '@ng-icons/core';
 
 
 @NgModule({
   declarations: [
     HomeComponent,
     LayoutComponent,
-    AnaliseImagemComponent
   ],
   imports: [
     CommonModule,
     PagesRoutingModule,
     NgOptimizedImage,
     CoreModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule,
+    NgIconComponent
   ]
 })
 export class PagesModule {

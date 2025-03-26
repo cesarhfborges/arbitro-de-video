@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LayoutComponent} from './layout.component';
 import {HomeComponent} from './home/home.component';
-import {AnaliseImagemComponent} from './analise-imagem/analise-imagem.component';
 
 const routes: Routes = [
   {
@@ -12,11 +11,7 @@ const routes: Routes = [
       {
         path: 'home',
         component: HomeComponent
-      },
-      {
-        path: 'analise-imagem',
-        component: AnaliseImagemComponent
-      },
+      }
     ]
   },
 ];

@@ -1,0 +1,123 @@
+.sidenav {
+  max-width: 250px;
+  min-width: 250px;
+  width: 100%;
+}
+
+input[type=range] {
+  &.input-range {
+    width: 100%;
+    height: 16px;
+
+    &[orient=vertical] {
+      -webkit-appearance: slider-vertical;
+      width: 16px;
+      height: 100%;
+    }
+  }
+}
+
+.container-analysis {
+  //background: red;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr 1fr auto;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 0;
+  padding-right: 10px;
+
+  .div1 {
+    //background-color: #386641;
+    grid-row-start: 1;
+    grid-column-start: 2;
+
+    grid-row-end: 2;
+    grid-column-end: 4;
+
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .div2 {
+    //background-color: #a7c957;
+    grid-row-start: 2;
+    grid-column-start: 2;
+
+    grid-row-end: 4;
+    grid-column-end: 4;
+
+    background-image: repeating-conic-gradient(#c5c5c5 0% 25%, #ffffff 0% 50%);
+    background-position: 0 0, 16px 16px;
+    background-size: 32px 32px;
+    background-color: #47d3ff;
+    background-attachment: fixed;
+    border: 1px solid black;
+    position: relative;
+  }
+
+  .div3 {
+    //background-color: #6a994e;
+    grid-row-start: 2;
+    grid-column-start: 1;
+
+    grid-row-end: 4;
+    grid-column-end: 2;
+    padding: 0 4px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .div4 {
+    //background-color: #8FBB79;
+    grid-row-start: 4;
+    grid-column-start: 2;
+
+    grid-row-end: 5;
+    grid-column-end: 4;
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+  }
+}
+
+//.container-analysis {
+//  height: 100%;
+//  //background: red;
+//  //display: flex;
+//  //flex-direction: row;
+//  //flex-wrap: nowrap;
+//  //justify-content: normal;
+//  //align-items: normal;
+//  //align-content: normal;
+//
+//  background-image: repeating-conic-gradient(#c5c5c5 0% 25%, #ffffff 0% 50%);
+//  background-position: 0 0, 16px 16px;
+//  background-size: 32px 32px;
+//  background-color: #47d3ff;
+//  background-attachment: fixed;
+//  position: relative;
+//
+//  > div#element {
+//    //display: block;
+//    //flex-grow: 1;
+//    //flex-shrink: 1;
+//    //flex-basis: auto;
+//    //align-self: auto;
+//    //order: 0;
+//    position: absolute;
+//
+//    padding: 10px;
+//    //display: inline-block;
+//
+//    background: red;
+//
+//    > img {
+//      object-fit: cover;
+//      border: 2px solid blue;
+//      max-width: 90%;
+//      max-height: 90%;
+//    }
+//  }
+//}

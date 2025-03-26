@@ -39,7 +39,9 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "src/assets/js/jquery-3.6.1.min.js",
+              "src/assets/js/numeric-1.2.6_stripped.js"
             ],
             "customWebpackConfig": {
               "path": "./angular.webpack.js",

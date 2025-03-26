@@ -4,9 +4,9 @@
       type="range"
       [(ngModel)]="zoom"
       [min]="50"
-      [max]="500"
+      [max]="800"
       [step]="1"
-      class="form-control-range"
+      class="form-range"
       id="formControlRangeTop"
       name="zoom"
     >
@@ -14,25 +14,30 @@
   <div class="col">
     <!--            <app-image-analisys></app-image-analisys>-->
 
-    <div id="img-analysis" appOffsideAnalysis>
-      <img
-        [src]="image"
-        alt="analisys"
+    <div id="img-analysis">
+      <div
         [appImageControls]="zoom"
         [scrollX]="scrollX"
         [scrollY]="scrollY"
+        style="display: inline-block; position: relative;"
       >
+        <img
+          [src]="image"
+          alt="analisys"
+          appOffsideAnalysis
+        >
+      </div>
     </div>
   </div>
   <div class="col d-flex justify-content-center" style="max-width: 80px">
     <input
       type="range"
-      class="form-control-range"
+      class="form-range"
       id="formControlRangeRight"
       orient="vertical"
       name="scrollY"
       [(ngModel)]="scrollY"
-      [min]="1"
+      [min]="-100"
       [max]="100"
       [step]="1"
     >
@@ -40,13 +45,14 @@
   <div class="col-12 d-flex align-items-center">
     <input
       type="range"
-      class="form-control-range"
+      class="form-range"
       id="formControlRangeBottom"
       name="scrollX"
       [(ngModel)]="scrollX"
-      [min]="1"
+      [min]="-100"
       [max]="100"
       [step]="1"
+      style="rotate: 180deg"
     >
   </div>
 </div>

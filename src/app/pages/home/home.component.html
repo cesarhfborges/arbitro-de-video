@@ -1,5 +1,47 @@
-<div class="row">
-  <div class="col-12">
-
+<div class="row flex-nowrap h-100">
+  <div class="col sidenav px-2 pt-2 bg-dark">
+    <p class="text-white">Analise</p>
+  </div>
+  <div class="col p-0">
+    <!--      <div class="container-fluid h-100 p-0">-->
+    <ng-container *ngTemplateOutlet="!!image ? analyse : picker"></ng-container>
+    <!--      </div>-->
   </div>
 </div>
+
+<ng-template #picker>
+  <div class="col-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="group">
+          <label for="formFile" class="form-label">Default file input example</label>
+          <input class="form-control" type="file" id="formFile" (change)="handleFileInput($event)">
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #analyse>
+  <div class="container-analysis">
+    <div class="div1">
+      <label for="customRange1">Zoom:</label>
+      <input type="range" class="input-range" id="customRange1">
+    </div>
+    <div class="div2">
+<!--      <div id="element">-->
+<!--        <img-->
+<!--          [src]="image"-->
+<!--          alt="impedimento"-->
+<!--        />-->
+<!--      </div>-->
+    </div>
+    <div class="div3">
+      <label for="customRange3">Y:</label>
+      <input type="range" class="input-range" orient="vertical" id="customRange3">
+    </div>
+    <div class="div4">
+      <label for="customRange4">X:</label>
+      <input type="range" class="input-range" id="customRange4">
+    </div>
+  </div>
+</ng-template>
