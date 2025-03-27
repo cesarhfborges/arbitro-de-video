@@ -1,6 +1,33 @@
 <div class="row flex-nowrap h-100">
   <div class="col sidenav px-2 pt-2 bg-dark">
     <p class="text-white">Analise</p>
+
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" [(ngModel)]="options.imageInvertColor" id="imageInvertColor">
+      <label class="form-check-label text-white" for="imageInvertColor">
+        Inverter cores
+      </label>
+    </div>
+
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" [(ngModel)]="options.grayscale" id="grayscale">
+      <label class="form-check-label text-white" for="grayscale">
+        grayscale
+      </label>
+    </div>
+
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" [(ngModel)]="options.sepia" id="sepia">
+      <label class="form-check-label text-white" for="sepia">
+        sepia
+      </label>
+    </div>
+
+    <code>
+      <pre class="text-white">
+        {{ options | json }}
+      </pre>
+    </code>
   </div>
   <div class="col p-0">
     <!--      <div class="container-fluid h-100 p-0">-->
@@ -15,7 +42,13 @@
       <div class="card-body">
         <div class="group">
           <label for="formFile" class="form-label">Default file input example</label>
-          <input class="form-control" type="file" id="formFile" (change)="handleFileInput($event)">
+          <input
+            type="file"
+            [accept]="configs.file.accept"
+            class="form-control"
+            id="formFile"
+            (change)="handleFileInput($event)"
+          />
         </div>
       </div>
     </div>
@@ -25,23 +58,49 @@
   <div class="container-analysis">
     <div class="div1">
       <label for="customRange1">Zoom:</label>
-      <input type="range" class="input-range" id="customRange1">
+      <input
+        type="range"
+        class="input-range"
+        id="customRange1"
+        [(ngModel)]="options.imageZ"
+        min="-50"
+        max="500"
+      >
     </div>
-    <div class="div2">
-<!--      <div id="element">-->
-<!--        <img-->
-<!--          [src]="image"-->
-<!--          alt="impedimento"-->
-<!--        />-->
-<!--      </div>-->
+    <div class="div2" (appEventZoom)="onZoomIn($event)">
+      <div
+        id="element"
+        [style.top]="imageTop"
+        [style.left]="imageLeft"
+        [style.width.%]="imageZoom"
+      >
+        <img
+          [src]="image"
+          [class.invert]="options.imageInvertColor"
+          [class.grayscale]="options.grayscale"
+          [class.sepia]="options.sepia"
+          alt="image-analyse"
+        />
+      </div>
     </div>
     <div class="div3">
       <label for="customRange3">Y:</label>
-      <input type="range" class="input-range" orient="vertical" id="customRange3">
+      <input
+        type="range"
+        class="input-range"
+        orient="vertical"
+        id="customRange3"
+        [(ngModel)]="options.imageY"
+      />
     </div>
     <div class="div4">
       <label for="customRange4">X:</label>
-      <input type="range" class="input-range" id="customRange4">
+      <input
+        type="range"
+        class="input-range"
+        id="customRange4"
+        [(ngModel)]="options.imageX"
+      />
     </div>
   </div>
 </ng-template>

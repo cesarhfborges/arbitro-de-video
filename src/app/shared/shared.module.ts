@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 
 import { PageNotFoundComponent } from './components/';
-import { WebviewDirective, ImageControlsDirective } from './directives/';
+import { WebviewDirective, ImageControlsDirective, EventZoomDirective } from './directives/';
 import { ImageAnalisysComponent } from './components/image-analisys/image-analisys.component';
 import { OffsideAnalysisDirective } from './directives/offside-analisys/offside-analysis.directive';
 
@@ -16,7 +16,8 @@ const COMPONENTS = [
 const DIRECTIVES = [
   WebviewDirective,
   ImageControlsDirective,
-  OffsideAnalysisDirective
+  OffsideAnalysisDirective,
+  EventZoomDirective
 ];
 
 
