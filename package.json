@@ -60,6 +60,7 @@
     "bootstrap": "~5.3.3",
     "mathjs": "14.4.0",
     "ngx-image-zoom": "^3.0.0",
+    "ngx-toastr": "13.2.1",
     "numeric": "1.2.6",
     "rxjs": "7.5.7",
     "tslib": "^2.4.0",

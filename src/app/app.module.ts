@@ -1,10 +1,12 @@
 import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {NgIconsModule} from '@ng-icons/core';
 import {CoreModule} from './core/core.module';
 import {SharedModule} from './shared/shared.module';
+import {ToastrModule} from 'ngx-toastr';
 import {heroTrash, heroPlus, heroMinus, heroXMark, heroCheck, heroEye, heroEyeSlash} from '@ng-icons/heroicons/outline';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -28,6 +30,13 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader => new Transla
     CoreModule,
     SharedModule,
     AppRoutingModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      autoDismiss: true,
+      maxOpened: 1,
+      newestOnTop: true,
+      timeOut: 3000
+    }),
     NgIconsModule.withIcons({ heroTrash, heroPlus, heroMinus, heroXMark, heroCheck, heroEye, heroEyeSlash }),
     TranslateModule.forRoot({
       loader: {

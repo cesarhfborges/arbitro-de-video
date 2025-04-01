@@ -1,5 +1,6 @@
 import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {ContextService} from '../../shared/services/context.service';
+import {ToastrService} from 'ngx-toastr';
 import {fakerPT_BR} from '@faker-js/faker';
 
 interface IPosition {
@@ -21,14 +22,18 @@ interface IVertex {
 })
 export class HomeComponent implements OnInit {
 
-  @ViewChild('inputShowRect') inputShowRect: ElementRef;
-  @ViewChild('imageCanvas') imageCanvas!: ElementRef;
+  @ViewChild('inputShowRect') inputShowRect: ElementRef<HTMLInputElement>;
+  @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('inputFile') inputFile!: ElementRef<HTMLInputElement>;
 
   image: HTMLImageElement | null = null;
 
   configs: any = {
     file: {
-      accept: 'image/*, video/*',
+      accept: {
+        imageTypes: ['.jpg', '.jpeg', '.png'], // 'image/jpeg',
+        videoTypes: ['.mpg', '.mp2', '.mpeg', '.mpe', '.mpv', '.mp4'], //'video/mp4',
+      },
     }
   };
 
@@ -62,7 +67,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private contextService: ContextService,
     private el: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private toastr: ToastrService
   ) {
     this.reader.onload = (event: any) => {
       // this.image = event.target.result;
@@ -80,6 +86,15 @@ export class HomeComponent implements OnInit {
       this.image.src = event.target.result;
       this.contextService.imageSelect(true);
     };
+  }
+
+  get acceptableFileTypes(): string[] {
+    const {imageTypes, videoTypes} = this.configs.file.accept;
+    return [...imageTypes, ...videoTypes];
+  }
+
+  get fileTypes(): string {
+    return this.acceptableFileTypes.join(', ');
   }
 
   get imageTop(): string {
@@ -122,9 +137,18 @@ export class HomeComponent implements OnInit {
   }
 
   handleFileInput(event: any): void {
+    this.toastr.clear();
     const files: FileList = event.target.files;
-    if (!!files && files.length > 0) {
-      this.reader.readAsDataURL(files[0]);
+    if (!!files && files.length === 1) {
+      if (this.acceptableFileTypes.some(str => files[0].name.includes(str))) {
+        this.reader.readAsDataURL(files[0]);
+      } else {
+        this.inputFile.nativeElement.value = '';
+        this.toastr.error('Tipo de arquivo não suportado.', 'Ops...');
+      }
+    } else {
+      this.inputFile.nativeElement.value = '';
+      this.toastr.error('Selecione somente um arquivo.', 'Ops...');
     }
   }
 

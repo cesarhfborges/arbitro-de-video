@@ -112,13 +112,15 @@
     <div class="card">
       <div class="card-body">
         <div class="group">
-          <label for="formFile" class="form-label">Selecione imagem</label>
+          <label for="formFile" class="form-label">Selecione arquivo</label>
           <input
+            #inputFile
             type="file"
-            [accept]="configs.file.accept"
+            [accept]="fileTypes"
             class="form-control"
             id="formFile"
             (change)="handleFileInput($event)"
+            [multiple]="false"
           />
         </div>
       </div>
