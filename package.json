@@ -59,6 +59,7 @@
     "@ng-icons/heroicons": "31.1.0",
     "bootstrap": "~5.3.3",
     "mathjs": "14.4.0",
+    "media-chrome": "4.9.0",
     "ngx-image-zoom": "^3.0.0",
     "ngx-toastr": "13.2.1",
     "numeric": "1.2.6",
