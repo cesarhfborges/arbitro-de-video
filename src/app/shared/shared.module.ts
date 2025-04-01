@@ -4,9 +4,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 
 import { PageNotFoundComponent } from './components/';
-import { WebviewDirective, ImageControlsDirective, EventZoomDirective } from './directives/';
+import { WebviewDirective, ImageControlsDirective, EventZoomDirective, ImageZoomDirective } from './directives/';
 import { ImageAnalisysComponent } from './components/image-analisys/image-analisys.component';
 import { OffsideAnalysisDirective } from './directives/offside-analisys/offside-analysis.directive';
+import {ContextService} from './services/context.service';
 
 const COMPONENTS = [
   PageNotFoundComponent,
@@ -17,7 +18,8 @@ const DIRECTIVES = [
   WebviewDirective,
   ImageControlsDirective,
   OffsideAnalysisDirective,
-  EventZoomDirective
+  EventZoomDirective,
+  ImageZoomDirective
 ];
 
 
@@ -32,6 +34,9 @@ const DIRECTIVES = [
     FormsModule,
     ...COMPONENTS,
     ...DIRECTIVES,
+  ],
+  providers: [
+    ContextService
   ]
 })
 export class SharedModule {}

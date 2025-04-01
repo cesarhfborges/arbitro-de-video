@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ContextService} from '../shared/services/context.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-layout',
@@ -7,9 +9,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LayoutComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private contextService: ContextService
+  ) {
+  }
+
+  get showClose(): Observable<boolean> {
+    return this.contextService.imageSelected();
+  }
 
   ngOnInit(): void {
   }
 
+  closeImage(): void {
+    this.contextService.imageSelect(false);
+  }
 }

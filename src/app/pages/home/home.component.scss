@@ -1,7 +1,9 @@
 .sidenav {
-  max-width: 250px;
-  min-width: 250px;
+  max-width: 290px;
+  min-width: 290px;
   width: 100%;
+  max-height: calc(100vh - 41px);
+  overflow-y: auto;
 }
 
 input[type=range] {
@@ -15,6 +17,36 @@ input[type=range] {
       height: 100%;
     }
   }
+}
+
+input[type=color] {
+  &.rounded {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 26px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    &::-webkit-color-swatch {
+      border-radius: 50%;
+      border: 1px solid #6c6c6c;
+    }
+    &::-moz-color-swatch {
+      border-radius: 50%;
+      border: 1px solid #6c6c6c;
+    }
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 .container-analysis {

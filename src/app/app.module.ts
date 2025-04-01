@@ -5,7 +5,7 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {NgIconsModule} from '@ng-icons/core';
 import {CoreModule} from './core/core.module';
 import {SharedModule} from './shared/shared.module';
-import {heroTrash, heroPlus, heroMinus} from '@ng-icons/heroicons/outline';
+import {heroTrash, heroPlus, heroMinus, heroXMark, heroCheck, heroEye, heroEyeSlash} from '@ng-icons/heroicons/outline';
 
 import {AppRoutingModule} from './app-routing.module';
 
@@ -28,7 +28,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader => new Transla
     CoreModule,
     SharedModule,
     AppRoutingModule,
-    NgIconsModule.withIcons({ heroTrash, heroPlus, heroMinus }),
+    NgIconsModule.withIcons({ heroTrash, heroPlus, heroMinus, heroXMark, heroCheck, heroEye, heroEyeSlash }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

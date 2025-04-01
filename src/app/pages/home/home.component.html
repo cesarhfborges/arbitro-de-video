@@ -2,6 +2,80 @@
   <div class="col sidenav px-2 pt-2 bg-dark">
     <p class="text-white">Analise</p>
 
+    <div>
+      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.lines">
+        <option value="none">Nenhum</option>
+        <option value="area">Area</option>
+        <option value="guides">Guias</option>
+        <option value="all">Todas</option>
+      </select>
+    </div>
+
+    <div>
+      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.offSideLine">
+        <option value="none">Nenhum</option>
+        <option value="area">Area</option>§
+        <option value="guides">Guias</option>
+        <option value="all">Todas</option>
+      </select>
+    </div>
+
+    <div>
+      <ul class="list-group">
+        <li class="list-group-item">
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Linhas de impedimento</span>
+            <button type="button" class="btn btn-primary btn-block" (click)="addOffside()">
+              <ng-icon name="hero-plus" color="#ffffff" style="display: flex"></ng-icon>
+            </button>
+          </div>
+        </li>
+        <li
+          class="list-group-item"
+          *ngFor="let offsideLine of offsideLines; let i = index"
+        >
+          <div class="d-flex justify-content-between align-items-center prevent-select">
+            <input type="color" class="rounded" name="head" [(ngModel)]="offsideLine.color" />
+            <span (click)="toggleOffsideSelected(i)" class="cursor-pointer">
+              <ng-icon *ngIf="options.offside === i" name="hero-check" class="text-primary"></ng-icon>
+              Linha {{i}}
+            </span>
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+              <button
+                type="button"
+                class="btn"
+                [class.btn-secondary]="!offsideLine.visible"
+                [class.btn-info]="offsideLine.visible"
+                (click)="showHiddenOffside(offsideLine)"
+              >
+                <ng-icon
+                  [name]="offsideLine.visible ? 'hero-eye' : 'hero-eye-slash'"
+                  style="display: flex;"
+                ></ng-icon>
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="deleteOffsideLine(i)"
+              >
+                <ng-icon
+                  name="hero-trash"
+                  style="display: flex;"
+                ></ng-icon>
+              </button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="form-check">
+      <input #inputShowRect class="form-check-input" type="checkbox" [(ngModel)]="options.showRect" id="showRect">
+      <label class="form-check-label text-white" for="showRect">
+        Linhas de referência
+      </label>
+    </div>
+
     <div class="form-check">
       <input class="form-check-input" type="checkbox" [(ngModel)]="options.imageInvertColor" id="imageInvertColor">
       <label class="form-check-label text-white" for="imageInvertColor">
@@ -23,25 +97,22 @@
       </label>
     </div>
 
-    <code>
-      <pre class="text-white">
-        {{ options | json }}
-      </pre>
-    </code>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" [(ngModel)]="options.magnifier" id="magnifier">
+      <label class="form-check-label text-white" for="magnifier">
+        magnifier
+      </label>
+    </div>
   </div>
-  <div class="col p-0">
-    <!--      <div class="container-fluid h-100 p-0">-->
-    <ng-container *ngTemplateOutlet="!!image ? analyse : picker"></ng-container>
-    <!--      </div>-->
-  </div>
+  <ng-container *ngTemplateOutlet="!!image ? analyse : picker"></ng-container>
 </div>
 
 <ng-template #picker>
-  <div class="col-6">
+  <div class="col d-flex justify-content-center align-items-center">
     <div class="card">
       <div class="card-body">
         <div class="group">
-          <label for="formFile" class="form-label">Default file input example</label>
+          <label for="formFile" class="form-label">Selecione imagem</label>
           <input
             type="file"
             [accept]="configs.file.accept"
@@ -55,52 +126,62 @@
   </div>
 </ng-template>
 <ng-template #analyse>
-  <div class="container-analysis">
-    <div class="div1">
-      <label for="customRange1">Zoom:</label>
-      <input
-        type="range"
-        class="input-range"
-        id="customRange1"
-        [(ngModel)]="options.imageZ"
-        min="-50"
-        max="500"
-      >
-    </div>
-    <div class="div2" (appEventZoom)="onZoomIn($event)">
+  <div class="col p-0">
+    <div class="container-analysis">
+      <div class="div1">
+        <label for="customRange1">Zoom:</label>
+        <input
+          type="range"
+          class="input-range"
+          id="customRange1"
+          [(ngModel)]="options.imageZ"
+          min="-50"
+          max="500"
+        >
+      </div>
       <div
-        id="element"
-        [style.top]="imageTop"
-        [style.left]="imageLeft"
-        [style.width.%]="imageZoom"
+        class="div2"
+        (appEventZoom)="onZoomIn($event)"
+        (verticalScroll)="onVerticalScroll($event)"
+        (horizontalScroll)="onHorizontalScroll($event)"
       >
-        <img
-          [src]="image"
+        <canvas
+          #imageCanvas
+          [style.top]="imageTop"
+          [style.left]="imageLeft"
+          [style.transform]="imageZoom"
           [class.invert]="options.imageInvertColor"
           [class.grayscale]="options.grayscale"
           [class.sepia]="options.sepia"
-          alt="image-analyse"
+          [appImageZoom]="options.magnifier"
+          [appImageZoomSrc]="image.src"
+          [appImageZoomSize]="2"
+        ></canvas>
+<!--        [appImageZoomSrc]="imageCanvas.toDataURL('image/png')"-->
+      </div>
+      <div class="div3">
+        <label for="customRange3">Y:</label>
+        <input
+          type="range"
+          class="input-range"
+          orient="vertical"
+          id="customRange3"
+          [min]="-100"
+          [max]="200"
+          [(ngModel)]="options.imageY"
         />
       </div>
-    </div>
-    <div class="div3">
-      <label for="customRange3">Y:</label>
-      <input
-        type="range"
-        class="input-range"
-        orient="vertical"
-        id="customRange3"
-        [(ngModel)]="options.imageY"
-      />
-    </div>
-    <div class="div4">
-      <label for="customRange4">X:</label>
-      <input
-        type="range"
-        class="input-range"
-        id="customRange4"
-        [(ngModel)]="options.imageX"
-      />
+      <div class="div4">
+        <label for="customRange4">X:</label>
+        <input
+          type="range"
+          class="input-range"
+          id="customRange4"
+          [min]="-100"
+          [max]="200"
+          [(ngModel)]="options.imageX"
+        />
+      </div>
     </div>
   </div>
 </ng-template>
