@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
-import { ElectronService } from './core/services';
-import { TranslateService } from '@ngx-translate/core';
-import { APP_CONFIG } from '../environments/environment';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {ElectronService} from './core/services';
+import {TranslateService} from '@ngx-translate/core';
+import {APP_CONFIG} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
+
   constructor(
     private electronService: ElectronService,
     private translate: TranslateService
@@ -24,5 +25,26 @@ export class AppComponent {
     } else {
       console.log('Run in browser');
     }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    if (event.ctrlKey && (event.key === '+' || event.key === '-')) {
+      event.preventDefault();
+    }
+  }
+
+  onWheel = (event: WheelEvent) => {
+    if (event.ctrlKey) {
+      event.preventDefault();
+    }
+  };
+
+  ngOnInit() {
+    document.addEventListener('wheel', this.onWheel, {passive: false});
+  }
+
+  ngOnDestroy() {
+    document.removeEventListener('wheel', this.onWheel);
   }
 }

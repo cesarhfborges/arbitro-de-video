@@ -7,8 +7,25 @@ import {NgIconsModule} from '@ng-icons/core';
 import {CoreModule} from './core/core.module';
 import {SharedModule} from './shared/shared.module';
 import {ToastrModule} from 'ngx-toastr';
-import {heroTrash, heroPlus, heroMinus, heroXMark, heroCheck, heroEye, heroEyeSlash} from '@ng-icons/heroicons/outline';
-
+import {
+  heroBackward,
+  heroCheck,
+  heroEye,
+  heroEyeSlash,
+  heroForward,
+  heroMinus,
+  heroPlus,
+  heroTrash,
+  heroXMark,
+  heroPlay,
+  heroPause,
+  heroChevronLeft,
+  heroChevronRight,
+  heroChevronDoubleLeft,
+  heroChevronDoubleRight,
+  heroPaperAirplane
+} from '@ng-icons/heroicons/outline';
+import {BsModalService, ModalModule} from 'ngx-bootstrap/modal';
 import {AppRoutingModule} from './app-routing.module';
 
 // NG Translate
@@ -31,13 +48,31 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader => new Transla
     SharedModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    ModalModule,
     ToastrModule.forRoot({
       autoDismiss: true,
       maxOpened: 1,
       newestOnTop: true,
       timeOut: 3000
     }),
-    NgIconsModule.withIcons({ heroTrash, heroPlus, heroMinus, heroXMark, heroCheck, heroEye, heroEyeSlash }),
+    NgIconsModule.withIcons({
+      heroTrash,
+      heroPlus,
+      heroMinus,
+      heroXMark,
+      heroCheck,
+      heroEye,
+      heroEyeSlash,
+      heroBackward,
+      heroForward,
+      heroPlay,
+      heroPause,
+      heroChevronLeft,
+      heroChevronRight,
+      heroChevronDoubleLeft,
+      heroChevronDoubleRight,
+      heroPaperAirplane
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -46,7 +81,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader => new Transla
       }
     })
   ],
-  providers: [],
+  providers: [BsModalService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

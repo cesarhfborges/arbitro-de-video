@@ -2,10 +2,31 @@ import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core
 import {ContextService} from '../../shared/services/context.service';
 import {ToastrService} from 'ngx-toastr';
 import {fakerPT_BR} from '@faker-js/faker';
+import {BsModalRef, BsModalService, ModalOptions} from 'ngx-bootstrap/modal';
+import {ModalVideoComponent} from '../../shared/components';
 
 interface IPosition {
   x: number;
   y: number;
+}
+
+type LineType = 'none' | 'area' | 'guides' | 'all';
+type OffsideLineType = 'horizontal' | 'vertical' | 'all';
+
+interface IOptions {
+  imageY: number;
+  imageX: number;
+  imageZ: number;
+  imageInvertColor: boolean;
+  grayscale: boolean;
+  sepia: boolean;
+  magnifier: boolean;
+  lines: LineType;
+  offsideLineType: OffsideLineType;
+  offside: number | null;
+  verticalReference: boolean;
+  offsideLineLen: number;
+  offsideLineSpace: number;
 }
 
 interface IVertex {
@@ -21,10 +42,10 @@ interface IVertex {
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-
   @ViewChild('inputShowRect') inputShowRect: ElementRef<HTMLInputElement>;
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('inputFile') inputFile!: ElementRef<HTMLInputElement>;
+  @ViewChild('inputURL') inputURL!: ElementRef<HTMLInputElement>;
 
   image: HTMLImageElement | null = null;
 
@@ -37,20 +58,23 @@ export class HomeComponent implements OnInit {
     }
   };
 
-  options: any = {
+  options: IOptions = {
     imageY: 50,
     imageX: 50,
     imageZ: 80,
-    showRect: true,
     imageInvertColor: false,
     grayscale: false,
     sepia: false,
     magnifier: false,
-    lines: 'area',
-    offSideLine: 'area',
-    offside: null
+    lines: 'all',
+    offside: null,
+    offsideLineType: 'all',
+    verticalReference: true,
+    offsideLineLen: .5,
+    offsideLineSpace: 1
   };
   protected offsideLines: { x: number; y: number; color: string; visible: boolean }[] = [];
+  private modalRef: BsModalRef;
   private reader = new FileReader();
   private ctx: CanvasRenderingContext2D;
   private isAreaDragging = false;
@@ -68,17 +92,24 @@ export class HomeComponent implements OnInit {
     private contextService: ContextService,
     private el: ElementRef,
     private renderer: Renderer2,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private modalService: BsModalService
   ) {
     this.reader.onload = (event: any) => {
       // this.image = event.target.result;
       this.image = new Image();
       this.image.onload = () => {
+        const baseV = this.image.width / 4;
+        const baseH = this.image.height / 4;
         this.vertices = {
-          topLeft: {x: 50, y: 50},
-          topRight: {x: 150, y: 50},
-          bottomRight: {x: 150, y: 150},
-          bottomLeft: {x: 50, y: 150}
+          topLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) - baseH},
+          topRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) - baseH},
+          bottomRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) + baseH},
+          bottomLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) + baseH}
+          // topLeft: {x: 50, y: 50},
+          // topRight: {x: 150, y: 50},
+          // bottomRight: {x: 150, y: 150},
+          // bottomLeft: {x: 50, y: 150}
         };
         this.createCanvas();
         // this.drawRectangle(ctx, img.width, img.height);
@@ -121,8 +152,60 @@ export class HomeComponent implements OnInit {
     return 'scale(1)';
   }
 
+  openLink(): void {
+    this.toastr.clear();
+    const httpRegex = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+    if (httpRegex.test(this.inputURL.nativeElement.value)) {
+      this.openModal(this.inputURL.nativeElement.value);
+      this.inputURL.nativeElement.value = '';
+    } else {
+      this.toastr.error('Link inválido.', 'Ops...');
+    }
+  }
+
+  openModal(url: string): void {
+    const initialState: ModalOptions = {
+      initialState: {
+        src: url
+      },
+      class: 'modal-fullscreen',
+      ignoreBackdropClick: true,
+      animated: true
+    };
+    this.modalRef = this.modalService.show(ModalVideoComponent, initialState);
+    this.modalRef.content.closeBtnName = 'Close';
+    this.modalRef.content.onclose = (value: string) => {
+      // Do something with myData and then hide
+      this.modalRef.hide();
+      this.onSelectImage(value);
+    };
+  }
+
+  onSelectImage(event: string): void {
+    this.image = new Image();
+    this.image.onload = () => {
+      const baseV = this.image.width / 4;
+      const baseH = this.image.height / 4;
+      this.vertices = {
+        topLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) - baseH},
+        topRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) - baseH},
+        bottomRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) + baseH},
+        bottomLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) + baseH}
+        // topLeft: {x: 50, y: 50},
+        // topRight: {x: 150, y: 50},
+        // bottomRight: {x: 150, y: 150},
+        // bottomLeft: {x: 50, y: 150}
+      };
+      this.createCanvas();
+    };
+    this.image.src = event;
+    this.contextService.imageSelect(true);
+    if (this.modalRef) {
+      this.modalRef.hide();
+    }
+  }
+
   ngOnInit(): void {
-    // throw new Error('Method not implemented.');
     this.contextService.imageSelected().subscribe({
       next: value => {
         if (!value) {
@@ -130,10 +213,6 @@ export class HomeComponent implements OnInit {
         }
       }
     });
-
-    // eslint-disable-next-line
-    const numeric = window['numeric'];
-    console.log(numeric);
   }
 
   handleFileInput(event: any): void {
@@ -187,16 +266,19 @@ export class HomeComponent implements OnInit {
     this.imageCanvas.nativeElement.addEventListener('mousedown', this.onMouseDown.bind(this));
     this.imageCanvas.nativeElement.addEventListener('mousemove', this.onMouseMove.bind(this));
     this.imageCanvas.nativeElement.addEventListener('mouseup', this.onMouseUp.bind(this));
-    (this.inputShowRect.nativeElement as HTMLInputElement).addEventListener('change', (event: any) => {
-      // console.log(event);
-      console.log(this.options.showRect);
-    });
-    console.log(this.inputShowRect.nativeElement);
+    // (this.inputShowRect.nativeElement as HTMLInputElement).addEventListener('change', (event: any) => {
+    //   console.log(event);
+    // console.log(this.options.showRect);
+    // });
+    // console.log(this.inputShowRect.nativeElement);
+    // fromEvent(this.imageCanvas.nativeElement, 'mousedown').pipe(throttleTime(7)).subscribe(this.onMouseDown.bind(this));
+    // fromEvent(this.imageCanvas.nativeElement, 'mousemove').pipe(throttleTime(7)).subscribe(this.onMouseMove.bind(this));
+    // fromEvent(this.imageCanvas.nativeElement, 'mouseup').pipe(throttleTime(7)).subscribe(this.onMouseUp.bind(this));
   }
 
 
   onMouseDown(event: MouseEvent): void {
-    console.log('onMouseDown');
+    // console.log('onMouseDown');
     // this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'default');
     const {offsetX, offsetY} = event;
     this.isMouseDragging = true;
@@ -206,7 +288,7 @@ export class HomeComponent implements OnInit {
       const dy = offsetY - vertex.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance <= this.handleSize / 2) {
+      if (['all', 'area'].includes(this.options.lines)  && distance <= this.handleSize / 2) {
         this.isAreaDragging = true;
         this.selectedHandle = i;
         return;
@@ -221,14 +303,14 @@ export class HomeComponent implements OnInit {
         const {offsetX, offsetY} = event;
         this.vertices[this.selectedHandle] = {x: offsetX, y: offsetY};
         this.updateCanvas();
-      } else {
+      } else if (this.options.offside !== null && ['all', 'guides'].includes(this.options.lines)) {
         this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'none');
         const {offsetX, offsetY} = event;
         if (this.options.offside !== null) {
           this.offsideLines[this.options.offside].x = offsetX;
           this.offsideLines[this.options.offside].y = offsetY;
+          this.updateCanvas();
         }
-        this.updateCanvas();
       }
     } else {
       this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'default');
@@ -240,7 +322,15 @@ export class HomeComponent implements OnInit {
     this.isAreaDragging = false;
     this.selectedHandle = null;
     this.isMouseDragging = false;
-    this.criarLinhaImpedimento();
+    if (['all', 'guides'].includes(this.options.lines)) {
+      this.criarLinhaImpedimento();
+    }
+  }
+
+  onChangeOptions(): void {
+    setTimeout(() => {
+      this.updateCanvas();
+    }, 10);
   }
 
   // }
@@ -270,16 +360,23 @@ export class HomeComponent implements OnInit {
 
   deleteOffsideLine(i: number) {
     this.offsideLines.splice(i, 1);
+    this.updateCanvas();
   }
 
   private updateCanvas(): void {
-    this.ctx.clearRect(0, 0, this.imageCanvas.nativeElement.width, this.imageCanvas.nativeElement.height);
-    this.imageCanvas.nativeElement.width = this.image.width;
-    this.imageCanvas.nativeElement.height = this.image.height;
-    this.ctx.drawImage(this.image, 0, 0);
-    this.criarArea();
-    if (!this.isAreaDragging || this.selectedHandle === null) {
-      this.criarLinhaImpedimento();
+    if (!!this.ctx) {
+      this.ctx.clearRect(0, 0, this.imageCanvas.nativeElement.width, this.imageCanvas.nativeElement.height);
+      this.imageCanvas.nativeElement.width = this.image.width;
+      this.imageCanvas.nativeElement.height = this.image.height;
+      this.ctx.drawImage(this.image, 0, 0);
+      if (['all', 'area'].includes(this.options.lines)) {
+        this.criarArea();
+      }
+      if (['all', 'guides'].includes(this.options.lines)) {
+        if (!this.isAreaDragging || this.selectedHandle === null) {
+          this.criarLinhaImpedimento();
+        }
+      }
     }
   }
 
@@ -337,36 +434,85 @@ export class HomeComponent implements OnInit {
   }
 
   private desenharLinhasDeProjecao(posX: number, posY: number, color: string): void {
-    // **Captura os pontos do retângulo**
-    const { topLeft, topRight, bottomLeft, bottomRight } = this.vertices;
+    // ** Captura os pontos do retângulo **
+    const {topLeft, topRight, bottomLeft, bottomRight} = this.vertices;
 
-    // **Calcular o ponto de fuga (homografia)**
-    const vanishingPoint = this.calcularPontoFuga(topLeft, topRight, bottomLeft, bottomRight);
+    if (['all', 'vertical'].includes(this.options.offsideLineType)) {
+      // ** Calcular o ponto de fuga (homografia) Vertical **
+      const pontoDeFugaVertical = this.calcularPontoFugaVertical(topLeft, topRight, bottomLeft, bottomRight);
+      this.desenharLinhaComPerspectiva(posX, posY, pontoDeFugaVertical, color); // Linha vertical
+    }
 
-    // **Desenhar linhas projetadas**
-    this.desenharLinhaComPerspectiva(posX, posY, vanishingPoint, color); // Linha horizontal
-    this.desenharLinhaComPerspectiva(posX, posY, { x: 0, y: posY }, color);  // Linha vertical
+    if (['all', 'horizontal'].includes(this.options.offsideLineType)) {
+      // ** Calcular o ponto de fuga (homografia) Horizontal **
+      const pontoDeFugaHorizontal = this.calcularPontoFugaHorizontal(topLeft, topRight, bottomLeft, bottomRight);
+      this.desenharLinhaComPerspectiva(posX, posY, pontoDeFugaHorizontal, color); // Linha horizontal
+    }
 
-    this.desenharLinhaReta(posX, posY, color);  // Linha vertical
+    if (this.options.verticalReference) {
+      this.desenharLinhaReta(posX, posY, color);  // Linha vertical
+    }
+  }
+
+  private invertColor(hex: string): string {
+    // Garante que o HEX está no formato correto
+    hex = hex.replace(/^#/, '');
+
+    if (hex.length !== 6) {
+      throw new Error('Formato de cor inválido. Use um HEX de 6 caracteres.');
+    }
+
+    // Converte HEX para RGB
+    const r: number = 255 - parseInt(hex.substring(0, 2), 16);
+    const g: number = 255 - parseInt(hex.substring(2, 4), 16);
+    const b: number = 255 - parseInt(hex.substring(4, 6), 16);
+
+    // Converte de volta para HEX
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`.toUpperCase();
   }
 
   private desenharLinhaReta(
     x: number,
     y: number,
     color: string,
-    lineWidth: number = 1
   ): void {
-    this.ctx.strokeStyle = color;
-    this.ctx.lineWidth = lineWidth;
+    this.ctx.strokeStyle = this.invertColor(color);
+    this.ctx.lineWidth = this.options.offsideLineLen;
 
     this.ctx.beginPath();
+    this.ctx.setLineDash([this.options.offsideLineSpace, this.options.offsideLineSpace]);
     this.ctx.moveTo(x, 0);
     this.ctx.lineTo(x, y);
     this.ctx.stroke();
     this.ctx.closePath();
   }
 
-  private calcularPontoFuga(
+  private calcularPontoFugaHorizontal(
+    topLeft: { x: number; y: number },
+    topRight: { x: number; y: number },
+    bottomLeft: { x: number; y: number },
+    bottomRight: { x: number; y: number }
+  ): { x: number; y: number } {
+    const m1 = (bottomRight.y - bottomLeft.y) / (bottomRight.x - bottomLeft.x);
+    const m2 = (topRight.y - topLeft.y) / (topRight.x - topLeft.x);
+
+    const A = [
+      [1, -1],
+      [m1, -m2]
+    ];
+    const res = [[topLeft.x - bottomLeft.x], [topLeft.y - bottomLeft.y]];
+
+    // eslint-disable-next-line
+    const numeric = window['numeric'];
+    const g = numeric.solve(A, res);
+
+    return {
+      x: bottomLeft.x + g[0],
+      y: bottomLeft.y + g[0] * m1
+    };
+  }
+
+  private calcularPontoFugaVertical(
     topLeft: { x: number; y: number },
     topRight: { x: number; y: number },
     bottomLeft: { x: number; y: number },
@@ -401,10 +547,11 @@ export class HomeComponent implements OnInit {
 
     if (pontos.length === 2) {
       this.ctx.beginPath();
+      this.ctx.setLineDash([]);
       this.ctx.moveTo(pontos[0].x, pontos[0].y);
       this.ctx.lineTo(pontos[1].x, pontos[1].y);
       this.ctx.strokeStyle = color;
-      this.ctx.lineWidth = lineWidth;
+      this.ctx.lineWidth = this.options.offsideLineLen;
       this.ctx.stroke();
       this.ctx.closePath();
     }
@@ -421,10 +568,10 @@ export class HomeComponent implements OnInit {
     const pontos = [];
 
     const bordas = [
-      { x: 0, y: y0 + ((0 - x0) * (y1 - y0)) / (x1 - x0) }, // Esquerda
-      { x: canvasWidth, y: y0 + ((canvasWidth - x0) * (y1 - y0)) / (x1 - x0) }, // Direita
-      { x: x0 + ((0 - y0) * (x1 - x0)) / (y1 - y0), y: 0 }, // Topo
-      { x: x0 + ((canvasHeight - y0) * (x1 - x0)) / (y1 - y0), y: canvasHeight }, // Fundo
+      {x: 0, y: y0 + ((0 - x0) * (y1 - y0)) / (x1 - x0)}, // Esquerda
+      {x: canvasWidth, y: y0 + ((canvasWidth - x0) * (y1 - y0)) / (x1 - x0)}, // Direita
+      {x: x0 + ((0 - y0) * (x1 - x0)) / (y1 - y0), y: 0}, // Topo
+      {x: x0 + ((canvasHeight - y0) * (x1 - x0)) / (y1 - y0), y: canvasHeight}, // Fundo
     ];
 
     for (const ponto of bordas) {

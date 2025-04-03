@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Selecione o frame para analisar</h4>
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <app-video-player
+    [src]="src"
+    poster="https://c8.alamy.com/comp/WAABGK/var-logo-premier-league-everton-fc-v-watford-fc-premier-league-goodison-park-everton-england-17-august-2019-gbd14793-strictly-editorial-use-only-if-the-playerplayers-depicted-in-this-image-isare-playing-for-an-english-club-or-the-england-national-team-then-this-image-may-only-be-used-for-editorial-purposes-no-commercial-use-the-following-usages-are-also-restricted-even-if-in-an-editorial-context-use-in-conjuction-with-or-part-of-any-unauthorized-audio-video-data-fixture-lists-clubleague-logos-betting-games-or-any-live-services-also-restricted-are-usag-WAABGK.jpg"
+    [width]="640"
+    [height]="360"
+    [muted]="true"
+    [pip]="false"
+    (selectedImageEvent)="onSelectImage($event)"
+  ></app-video-player>
+</div>

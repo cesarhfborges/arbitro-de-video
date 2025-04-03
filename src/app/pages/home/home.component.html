@@ -1,26 +1,63 @@
 <div class="row flex-nowrap h-100">
-  <div class="col sidenav px-2 pt-2 bg-dark">
+  <div *ngIf="!!image" class="col sidenav px-2 pt-2 bg-dark d-flex flex-column gap-2">
     <p class="text-white">Analise</p>
 
     <div>
-      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.lines">
+      <span class="text-light">Exibir</span>
+      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.lines" (input)="onChangeOptions()">
         <option value="none">Nenhum</option>
         <option value="area">Area</option>
-        <option value="guides">Guias</option>
+        <option value="guides">Linha VAR</option>
         <option value="all">Todas</option>
       </select>
     </div>
 
-    <div>
-      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.offSideLine">
-        <option value="none">Nenhum</option>
-        <option value="area">Area</option>§
-        <option value="guides">Guias</option>
+    <div *ngIf="['all', 'guides'].includes(options.lines)">
+      <span class="text-light">Tipo de linha</span>
+      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.offsideLineType" (input)="onChangeOptions()">
+        <option value="horizontal">Horizontal</option>
+        <option value="vertical">Vertical</option>
         <option value="all">Todas</option>
       </select>
     </div>
 
-    <div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" [(ngModel)]="options.verticalReference" id="verticalReference" (input)="onChangeOptions()">
+      <label class="form-check-label text-white" for="verticalReference">
+        Linha referencia vertical
+      </label>
+    </div>
+
+    <div class="group">
+      <label for="offsideLineLen" class="form-label text-light">Espessura da linha</label>
+      <input
+        type="range"
+        [(ngModel)]="options.offsideLineLen"
+        class="form-range"
+        id="offsideLineLen"
+        [step]=".05"
+        [min]=".01"
+        [max]="4"
+        (input)="onChangeOptions()"
+      >
+    </div>
+
+    <div class="group">
+      <label for="offsideLineSpace" class="form-label text-light">Linha Vertical espacamento</label>
+      <input
+        type="range"
+        [(ngModel)]="options.offsideLineSpace"
+        class="form-range"
+        id="offsideLineSpace"
+        [step]=".1"
+        [min]="0"
+        [max]="5"
+        (input)="onChangeOptions()"
+      >
+    </div>
+
+    <div *ngIf="['all', 'guides'].includes(options.lines)">
+      <span class="text-light">Linhas do var</span>
       <ul class="list-group">
         <li class="list-group-item">
           <div class="d-flex justify-content-between align-items-center">
@@ -35,7 +72,7 @@
           *ngFor="let offsideLine of offsideLines; let i = index"
         >
           <div class="d-flex justify-content-between align-items-center prevent-select">
-            <input type="color" class="rounded" name="head" [(ngModel)]="offsideLine.color" />
+            <input type="color" class="rounded" name="head" [(ngModel)]="offsideLine.color" (input)="onChangeOptions()" />
             <span (click)="toggleOffsideSelected(i)" class="cursor-pointer">
               <ng-icon *ngIf="options.offside === i" name="hero-check" class="text-primary"></ng-icon>
               Linha {{i}}
@@ -70,13 +107,6 @@
     </div>
 
     <div class="form-check">
-      <input #inputShowRect class="form-check-input" type="checkbox" [(ngModel)]="options.showRect" id="showRect">
-      <label class="form-check-label text-white" for="showRect">
-        Linhas de referência
-      </label>
-    </div>
-
-    <div class="form-check">
       <input class="form-check-input" type="checkbox" [(ngModel)]="options.imageInvertColor" id="imageInvertColor">
       <label class="form-check-label text-white" for="imageInvertColor">
         Inverter cores
@@ -103,12 +133,17 @@
         magnifier
       </label>
     </div>
+    <code>
+      <pre class="text-white">
+        {{ options | json }}
+      </pre>
+    </code>
   </div>
   <ng-container *ngTemplateOutlet="!!image ? analyse : picker"></ng-container>
 </div>
 
 <ng-template #picker>
-  <div class="col d-flex justify-content-center align-items-center">
+  <div class="col d-flex justify-content-center align-items-center bg-load">
     <div class="card">
       <div class="card-body">
         <div class="group">
@@ -123,6 +158,32 @@
             [multiple]="false"
           />
         </div>
+        <p class="text-center mt-3 mb-1">OU</p>
+        <div class="group">
+          <label for="formURL" class="form-label">Link do video</label>
+          <div class="input-group mb-3">
+            <input
+              #inputURL
+              type="url"
+              class="form-control"
+              id="formURL"
+              placeholder="https://location/file.mp4"
+              aria-describedby="send-button"
+              autocomplete="off"
+            >
+            <button class="btn btn-outline-secondary" type="button" id="send-button" (click)="openLink()">
+              <ng-icon
+                name="hero-paper-airplane"
+                style="display: flex;"
+              ></ng-icon>
+            </button>
+          </div>
+        </div>
+<!--        <div class="group">-->
+<!--          <button type="button" class="btn btn-primary" >-->
+<!--            Launch static backdrop modal-->
+<!--          </button>-->
+<!--        </div>-->
       </div>
     </div>
   </div>

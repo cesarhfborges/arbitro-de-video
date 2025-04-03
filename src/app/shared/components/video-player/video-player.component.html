@@ -1,0 +1,46 @@
+<div class="d-flex flex-column h-100 gap-3">
+  <div class="flex-grow-1">
+    <video
+      #target
+      class="video-js vjs-default-skin"
+      controls
+      preload="auto"
+      [attr.width]="width"
+      [attr.height]="height"
+      [poster]="poster"
+      crossorigin="anonymous"
+    ></video>
+  </div>
+  <div class="d-flex gap-3">
+    <button type="button" class="btn btn-primary" (click)="togglePlay()">
+      <ng-icon [name]="isPlaying ? 'hero-play' : 'hero-pause'" color="#ffffff" style="display: flex"></ng-icon>
+    </button>
+    <button type="button" class="btn btn-primary" (click)="rewind(8)">
+      <ng-icon name="hero-backward" color="#ffffff" style="display: flex"></ng-icon>
+    </button>
+    <button type="button" class="btn btn-primary" (click)="rewind()">
+      <ng-icon name="hero-chevron-left" color="#ffffff" style="display: flex"></ng-icon>
+    </button>
+    <input
+      #progressBar
+      type="range"
+      class="input-range flex-fill"
+      id="customRange1"
+      value="0"
+      min="0"
+      max="100"
+      step=".1"
+      (input)="onRangeInput($event)"
+    >
+    <button type="button" class="btn btn-primary" (click)="forward()">
+      <ng-icon name="hero-chevron-right" color="#ffffff" style="display: flex"></ng-icon>
+    </button>
+    <button type="button" class="btn btn-primary" (click)="forward(8)">
+      <ng-icon name="hero-forward" color="#ffffff" style="display: flex"></ng-icon>
+    </button>
+    <select class="form-select" aria-label="Default select example" [(ngModel)]="rate" [style.max-width.px]="100" (change)="onPlaybackRateChange($event)">
+      <option *ngFor="let p of playbackRates" [value]="p">{{ p }}x</option>
+    </select>
+    <button type="button" class="btn btn-primary" (click)="save()" [style.margin-left.px]="76">Confirmar</button>
+  </div>
+</div>
