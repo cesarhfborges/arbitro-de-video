@@ -541,7 +541,6 @@ export class HomeComponent implements OnInit {
     y: number,
     pontoFuga: { x: number; y: number },
     color: string,
-    lineWidth: number = 1
   ): void {
     const pontos = this.encontrarExtremidades(x, y, pontoFuga.x, pontoFuga.y, this.ctx.canvas.width, this.ctx.canvas.height);
 
