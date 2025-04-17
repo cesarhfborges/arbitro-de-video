@@ -19,6 +19,8 @@ interface IOptions {
   imageZ: number;
   filtro: 'invert' | 'grayscale' | 'sepia' | 'none';
   magnifier: boolean;
+  magnifierSize: number;
+  magnifierZoom: number;
   lines: LineType;
   offsideLineType: OffsideLineType;
   offside: number | null;
@@ -62,6 +64,8 @@ export class HomeComponent implements OnInit {
     imageZ: 80,
     filtro: 'none',
     magnifier: false,
+    magnifierSize: 200,
+    magnifierZoom: 2,
     lines: 'all',
     offside: null,
     offsideLineType: 'all',
@@ -286,15 +290,15 @@ export class HomeComponent implements OnInit {
   }
 
   onMouseMove(event: MouseEvent): void {
+    const {offsetX, offsetY} = event;
+    // console.log('offsetX; ', offsetX, ' - ', 'offsetY: ', offsetY);
     if (this.isMouseDragging) {
       if (this.isAreaDragging || this.selectedHandle !== null) {
         this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'none');
-        const {offsetX, offsetY} = event;
         this.vertices[this.selectedHandle] = {x: offsetX, y: offsetY};
         this.updateCanvas();
       } else if (this.options.offside !== null && ['all', 'guides'].includes(this.options.lines)) {
         this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'none');
-        const {offsetX, offsetY} = event;
         if (this.options.offside !== null) {
           this.offsideLines[this.options.offside].x = offsetX;
           this.offsideLines[this.options.offside].y = offsetY;

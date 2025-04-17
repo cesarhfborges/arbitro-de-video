@@ -4,7 +4,13 @@ import {TranslateModule} from '@ngx-translate/core';
 import {FormsModule} from '@angular/forms';
 
 import {ModalVideoComponent, PageNotFoundComponent, VideoPlayerComponent} from './components/';
-import {EventZoomDirective, ImageControlsDirective, ImageZoomDirective, WebviewDirective} from './directives/';
+import {
+  BlockMobileDirective,
+  EventZoomDirective,
+  ImageControlsDirective,
+  ImageZoomDirective,
+  WebviewDirective
+} from './directives/';
 import {ImageAnalisysComponent} from './components/image-analisys/image-analisys.component';
 import {ContextService} from './services/context.service';
 import {NgIconComponent} from '@ng-icons/core';
@@ -20,7 +26,8 @@ const DIRECTIVES = [
   WebviewDirective,
   ImageControlsDirective,
   EventZoomDirective,
-  ImageZoomDirective
+  ImageZoomDirective,
+  BlockMobileDirective
 ];
 
 

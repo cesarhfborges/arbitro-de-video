@@ -4,83 +4,92 @@ import {Directive, ElementRef, HostListener, Input, Renderer2} from '@angular/co
   selector: '[appImageZoom]'
 })
 export class ImageZoomDirective {
+  @Input('appImageZoom') enabled = false;
+  @Input('appImageZoomSrc') src: string | null = null;
+  @Input('appImageZoomSize') size: number = 150;
+  @Input('appImageZoomLevel') level: number = 2;
 
-  @Input('appImageZoom') enabled: boolean = false;
-  @Input('appImageZoomSrc') src: string = null;
-  @Input('appImageZoomSize') size: number = 2;
-  private zoomElement: HTMLDivElement | null = null;
-  private nativeElement: HTMLCanvasElement | null = null;
+  private canvasElement: HTMLCanvasElement | null = null;
+  private ctx: CanvasRenderingContext2D | null = null;
+  private zoomCanvas: HTMLCanvasElement | null = null;
+  private zoomCtx: CanvasRenderingContext2D | null = null;
 
   constructor(private el: ElementRef, private renderer: Renderer2) {
-    this.nativeElement = this.el.nativeElement;
-    console.log(this.nativeElement.tagName);
-    if (this.nativeElement.tagName !== 'CANVAS') {
-      console.error('A diretiva appImageZoom só pode ser usada em elementos <canvas></canvas>.');
+    if (this.el.nativeElement.tagName === 'CANVAS') {
+      this.canvasElement = this.el.nativeElement;
+      this.ctx = this.canvasElement.getContext('2d');
+    } else {
+      console.error('A diretiva appImageZoom só pode ser usada em elementos <canvas>');
     }
   }
 
-  @HostListener('mouseenter') onMouseEnter() {
-    if (this.enabled && this.src) {
-      this.createZoomElement();
-      this.updateZoom(null); // Inicializa a posição do zoom
+  @HostListener('mouseenter', ['$event'])
+  onMouseEnter(event: MouseEvent): void {
+    if (this.enabled && this.ctx) {
+      this.createZoomCanvas();
     }
   }
 
-  @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
-    if (this.enabled && this.zoomElement) {
-      this.updateZoom(event);
+  @HostListener('mousemove', ['$event'])
+  onMouseMove(event: MouseEvent): void {
+    if (!this.enabled || !this.ctx || !this.zoomCanvas || !this.zoomCtx) {
+      return;
+    }
+    const rect = this.canvasElement.getBoundingClientRect();
+    const transform = getComputedStyle(this.canvasElement).transform;
+    let scaleX = 1;
+    let scaleY = 1;
+    if (transform && transform !== 'none') {
+      const match = transform.match(/matrix\(([^)]+)\)/);
+      if (match) {
+        const values = match[1].split(',').map(parseFloat);
+        scaleX = values[0];
+        scaleY = values[3];
+      }
+    }
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+    const x = mouseX / scaleX;
+    const y = mouseY / scaleY;
+    const zoomSize = this.size / this.level;
+    const sx = Math.max(0, Math.min(this.canvasElement.width - zoomSize, x - zoomSize / 2));
+    const sy = Math.max(0, Math.min(this.canvasElement.height - zoomSize, y - zoomSize / 2));
+    this.zoomCtx.clearRect(0, 0, this.size, this.size);
+    this.zoomCtx.imageSmoothingEnabled = false;
+    this.zoomCtx.drawImage(
+      this.canvasElement,
+      sx,
+      sy,
+      zoomSize,
+      zoomSize,
+      0,
+      0,
+      this.size,
+      this.size
+    );
+    this.renderer.setStyle(this.zoomCanvas, 'right', '20px');
+    this.renderer.setStyle(this.zoomCanvas, 'top', '20px');
+  }
+
+  @HostListener('mouseleave')
+  onMouseLeave(): void {
+    if (this.zoomCanvas) {
+      this.renderer.removeChild(this.el.nativeElement.parentElement, this.zoomCanvas);
+      this.zoomCanvas = null;
+      this.zoomCtx = null;
     }
   }
 
-  @HostListener('mouseleave') onMouseLeave() {
-    if (this.zoomElement) {
-      this.renderer.removeChild(this.nativeElement.parentNode, this.zoomElement);
-      this.zoomElement = null;
-    }
+  private createZoomCanvas(): void {
+    this.zoomCanvas = this.renderer.createElement('canvas') as HTMLCanvasElement;
+    this.renderer.setStyle(this.zoomCanvas, 'position', 'absolute');
+    this.renderer.setStyle(this.zoomCanvas, 'pointerEvents', 'none');
+    this.renderer.setStyle(this.zoomCanvas, 'border', '2px solid #000000');
+    this.renderer.setStyle(this.zoomCanvas, 'zIndex', '1000');
+    this.renderer.setStyle(this.zoomCanvas, 'boxShadow', '3px 3px 8px 0px rgba(0,0,0,1)');
+    this.zoomCanvas.width = this.size;
+    this.zoomCanvas.height = this.size;
+    this.zoomCtx = this.zoomCanvas.getContext('2d');
+    this.renderer.appendChild(this.el.nativeElement.parentElement, this.zoomCanvas);
   }
-
-  private createZoomElement() {
-    this.zoomElement = this.renderer.createElement('div');
-    this.renderer.addClass(this.zoomElement, 'image-zoom-lens');
-
-    const imageWidth = this.nativeElement.offsetWidth;
-    const imageHeight = this.nativeElement.offsetHeight;
-    const lensSize = 100; // Tamanho da lupa, ajuste conforme necessário
-
-    this.renderer.setStyle(this.zoomElement, 'width', `${lensSize}px`);
-    this.renderer.setStyle(this.zoomElement, 'height', `${lensSize}px`);
-    this.renderer.setStyle(this.zoomElement, 'border', '1px solid #ccc');
-    this.renderer.setStyle(this.zoomElement, 'position', 'absolute');
-    this.renderer.setStyle(this.zoomElement, 'cursor', 'zoom-in');
-    this.renderer.setStyle(this.zoomElement, 'background-repeat', 'no-repeat');
-    // Ajuste o fator de zoom aqui
-    this.renderer.setStyle(this.zoomElement, 'background-size', `${imageWidth * this.size}px ${imageHeight * this.size}px`);
-
-    this.renderer.appendChild(this.nativeElement.parentNode, this.zoomElement);
-  }
-
-  private updateZoom(event: MouseEvent | null) {
-    if (this.zoomElement && this.src && this.nativeElement.offsetWidth && this.nativeElement.offsetHeight) {
-      const rect = this.nativeElement.getBoundingClientRect();
-      const lensSize = this.zoomElement.offsetWidth;
-      const x: number = (event ? event.clientX - rect.left - lensSize / 2 : this.nativeElement.offsetWidth / 2 - lensSize / 2) + 25;
-      const y: number = (event ? event.clientY - rect.top - lensSize / 2 : this.nativeElement.offsetHeight / 2 - lensSize / 2) + 25;
-
-      // Mantém a lupa dentro dos limites da imagem
-      const maxX = this.nativeElement.offsetWidth - lensSize;
-      const maxY = this.nativeElement.offsetHeight - lensSize;
-      const boundedX = Math.max(0, Math.min(x, maxX));
-      const boundedY = Math.max(0, Math.min(y, maxY));
-
-      this.renderer.setStyle(this.zoomElement, 'left', `${boundedX}px`);
-      this.renderer.setStyle(this.zoomElement, 'top', `${boundedY}px`);
-
-      // Atualiza o background do elemento de zoom
-      const bgX = -boundedX * this.size; // Ajuste o fator de zoom aqui (deve ser o mesmo do background-size)
-      const bgY = -boundedY * this.size;
-      this.renderer.setStyle(this.zoomElement, 'backgroundImage', `url('${this.src}')`);
-      this.renderer.setStyle(this.zoomElement, 'backgroundPosition', `${bgX}px ${bgY}px`);
-    }
-  }
-
 }
