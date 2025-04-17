@@ -37,7 +37,7 @@
         id="offsideLineLen"
         [step]=".05"
         [min]=".01"
-        [max]="4"
+        [max]="7"
         (input)="onChangeOptions()"
       >
     </div>
@@ -106,38 +106,29 @@
       </ul>
     </div>
 
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" [(ngModel)]="options.imageInvertColor" id="imageInvertColor">
-      <label class="form-check-label text-white" for="imageInvertColor">
-        Inverter cores
-      </label>
-    </div>
+    <hr>
 
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" [(ngModel)]="options.grayscale" id="grayscale">
-      <label class="form-check-label text-white" for="grayscale">
-        grayscale
-      </label>
-    </div>
-
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" [(ngModel)]="options.sepia" id="sepia">
-      <label class="form-check-label text-white" for="sepia">
-        sepia
-      </label>
+    <div>
+      <span class="text-light">Filtro</span>
+      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.filtro" (input)="onChangeOptions()">
+        <option value="none">Normal</option>
+        <option value="invert">Inverter cores</option>
+        <option value="grayscale">Escala a de cinza</option>
+        <option value="sepia">Sepia</option>
+      </select>
     </div>
 
     <div class="form-check">
       <input class="form-check-input" type="checkbox" [(ngModel)]="options.magnifier" id="magnifier">
       <label class="form-check-label text-white" for="magnifier">
-        magnifier
+        Lupa
       </label>
     </div>
-    <code>
-      <pre class="text-white">
-        {{ options | json }}
-      </pre>
-    </code>
+<!--    <code>-->
+<!--      <pre class="text-white">-->
+<!--        {{ options | json }}-->
+<!--      </pre>-->
+<!--    </code>-->
   </div>
   <ng-container *ngTemplateOutlet="!!image ? analyse : picker"></ng-container>
 </div>
@@ -147,7 +138,7 @@
     <div class="card">
       <div class="card-body">
         <div class="group">
-          <label for="formFile" class="form-label">Selecione arquivo</label>
+          <label for="formFile" class="form-label">Selecione arquivo de imagem</label>
           <input
             #inputFile
             type="file"
@@ -158,31 +149,26 @@
             [multiple]="false"
           />
         </div>
-        <p class="text-center mt-3 mb-1">OU</p>
-        <div class="group">
-          <label for="formURL" class="form-label">Link do video</label>
-          <div class="input-group mb-3">
-            <input
-              #inputURL
-              type="url"
-              class="form-control"
-              id="formURL"
-              placeholder="https://location/file.mp4"
-              aria-describedby="send-button"
-              autocomplete="off"
-            >
-            <button class="btn btn-outline-secondary" type="button" id="send-button" (click)="openLink()">
-              <ng-icon
-                name="hero-paper-airplane"
-                style="display: flex;"
-              ></ng-icon>
-            </button>
-          </div>
-        </div>
+<!--        <p class="text-center mt-3 mb-1">OU</p>-->
 <!--        <div class="group">-->
-<!--          <button type="button" class="btn btn-primary" >-->
-<!--            Launch static backdrop modal-->
-<!--          </button>-->
+<!--          <label for="formURL" class="form-label">Link do video</label>-->
+<!--          <div class="input-group mb-3">-->
+<!--            <input-->
+<!--              #inputURL-->
+<!--              type="url"-->
+<!--              class="form-control"-->
+<!--              id="formURL"-->
+<!--              placeholder="https://location/file.mp4"-->
+<!--              aria-describedby="send-button"-->
+<!--              autocomplete="off"-->
+<!--            >-->
+<!--            <button class="btn btn-outline-secondary" type="button" id="send-button" (click)="openLink()">-->
+<!--              <ng-icon-->
+<!--                name="hero-paper-airplane"-->
+<!--                style="display: flex;"-->
+<!--              ></ng-icon>-->
+<!--            </button>-->
+<!--          </div>-->
 <!--        </div>-->
       </div>
     </div>
@@ -213,14 +199,10 @@
           [style.top]="imageTop"
           [style.left]="imageLeft"
           [style.transform]="imageZoom"
-          [class.invert]="options.imageInvertColor"
-          [class.grayscale]="options.grayscale"
-          [class.sepia]="options.sepia"
           [appImageZoom]="options.magnifier"
           [appImageZoomSrc]="image.src"
           [appImageZoomSize]="2"
         ></canvas>
-<!--        [appImageZoomSrc]="imageCanvas.toDataURL('image/png')"-->
       </div>
       <div class="div3">
         <label for="customRange3">Y:</label>

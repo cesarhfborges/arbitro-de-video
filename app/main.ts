@@ -2,6 +2,8 @@ import {app, BrowserWindow, screen} from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 
+app.commandLine.appendSwitch(' - ignore-gpu-blacklist');
+
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');

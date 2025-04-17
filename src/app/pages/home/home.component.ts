@@ -17,9 +17,7 @@ interface IOptions {
   imageY: number;
   imageX: number;
   imageZ: number;
-  imageInvertColor: boolean;
-  grayscale: boolean;
-  sepia: boolean;
+  filtro: 'invert' | 'grayscale' | 'sepia' | 'none';
   magnifier: boolean;
   lines: LineType;
   offsideLineType: OffsideLineType;
@@ -62,9 +60,7 @@ export class HomeComponent implements OnInit {
     imageY: 50,
     imageX: 50,
     imageZ: 80,
-    imageInvertColor: false,
-    grayscale: false,
-    sepia: false,
+    filtro: 'none',
     magnifier: false,
     lines: 'all',
     offside: null,
@@ -260,26 +256,17 @@ export class HomeComponent implements OnInit {
     this.renderer.setStyle(this.imageCanvas.nativeElement, 'top', 0);
     this.renderer.setStyle(this.imageCanvas.nativeElement, 'left', 0);
     this.ctx = this.imageCanvas.nativeElement.getContext('2d');
+    this.ctx.imageSmoothingEnabled = true;
 
     this.updateCanvas();
 
     this.imageCanvas.nativeElement.addEventListener('mousedown', this.onMouseDown.bind(this));
     this.imageCanvas.nativeElement.addEventListener('mousemove', this.onMouseMove.bind(this));
     this.imageCanvas.nativeElement.addEventListener('mouseup', this.onMouseUp.bind(this));
-    // (this.inputShowRect.nativeElement as HTMLInputElement).addEventListener('change', (event: any) => {
-    //   console.log(event);
-    // console.log(this.options.showRect);
-    // });
-    // console.log(this.inputShowRect.nativeElement);
-    // fromEvent(this.imageCanvas.nativeElement, 'mousedown').pipe(throttleTime(7)).subscribe(this.onMouseDown.bind(this));
-    // fromEvent(this.imageCanvas.nativeElement, 'mousemove').pipe(throttleTime(7)).subscribe(this.onMouseMove.bind(this));
-    // fromEvent(this.imageCanvas.nativeElement, 'mouseup').pipe(throttleTime(7)).subscribe(this.onMouseUp.bind(this));
   }
 
 
   onMouseDown(event: MouseEvent): void {
-    // console.log('onMouseDown');
-    // this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'default');
     const {offsetX, offsetY} = event;
     this.isMouseDragging = true;
     for (const i of Object.keys(this.vertices)) {
@@ -288,7 +275,7 @@ export class HomeComponent implements OnInit {
       const dy = offsetY - vertex.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (['all', 'area'].includes(this.options.lines)  && distance <= this.handleSize / 2) {
+      if (['all', 'area'].includes(this.options.lines) && distance <= this.handleSize / 2) {
         this.isAreaDragging = true;
         this.selectedHandle = i;
         return;
@@ -369,6 +356,17 @@ export class HomeComponent implements OnInit {
       this.imageCanvas.nativeElement.width = this.image.width;
       this.imageCanvas.nativeElement.height = this.image.height;
       this.ctx.drawImage(this.image, 0, 0);
+      switch (this.options.filtro) {
+        case 'invert':
+          this.inverterCores();
+          break;
+        case 'grayscale':
+          this.aplicarFiltroCinza();
+          break;
+        case 'sepia':
+          this.aplicarFiltroSepia();
+          break;
+      }
       if (['all', 'area'].includes(this.options.lines)) {
         this.criarArea();
       }
@@ -579,5 +577,49 @@ export class HomeComponent implements OnInit {
       }
     }
     return pontos.length === 2 ? pontos : [];
+  }
+
+  private inverterCores(): void {
+    const imageData = this.ctx.getImageData(0, 0, this.imageCanvas.nativeElement.width, this.imageCanvas.nativeElement.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      data[i] = 255 - data[i];     // Vermelho
+      data[i + 1] = 255 - data[i + 1]; // Verde
+      data[i + 2] = 255 - data[i + 2]; // Azul
+      // O quarto valor (data[i + 3]) é o canal alfa (transparência), geralmente não é invertido
+    }
+    this.ctx.putImageData(imageData, 0, 0);
+  }
+
+  private aplicarFiltroCinza(): void {
+    const imageData = this.ctx.getImageData(0, 0, this.imageCanvas.nativeElement.width, this.imageCanvas.nativeElement.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const red = data[i];
+      const green = data[i + 1];
+      const blue = data[i + 2];
+      const gray = 0.299 * red + 0.587 * green + 0.114 * blue;
+      data[i] = gray;
+      data[i + 1] = gray;
+      data[i + 2] = gray;
+    }
+    this.ctx.putImageData(imageData, 0, 0);
+  }
+
+  private aplicarFiltroSepia(): void {
+    const imageData = this.ctx.getImageData(0, 0, this.imageCanvas.nativeElement.width, this.imageCanvas.nativeElement.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const red = data[i];
+      const green = data[i + 1];
+      const blue = data[i + 2];
+      const newRed = Math.min(255, 0.393 * red + 0.769 * green + 0.189 * blue);
+      const newGreen = Math.min(255, 0.349 * red + 0.686 * green + 0.168 * blue);
+      const newBlue = Math.min(255, 0.272 * red + 0.534 * green + 0.131 * blue);
+      data[i] = newRed;
+      data[i + 1] = newGreen;
+      data[i + 2] = newBlue;
+    }
+    this.ctx.putImageData(imageData, 0, 0);
   }
 }
