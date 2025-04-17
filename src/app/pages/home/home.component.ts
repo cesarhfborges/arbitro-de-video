@@ -50,8 +50,8 @@ export class HomeComponent implements OnInit {
   configs: any = {
     file: {
       accept: {
-        imageTypes: ['.jpg', '.jpeg', '.png'], // 'image/jpeg',
-        videoTypes: ['.mpg', '.mp2', '.mpeg', '.mpe', '.mpv', '.mp4'], //'video/mp4',
+        imageTypes: ['.jpg', '.jpeg', '.png'],
+        // videoTypes: ['.mpg', '.mp2', '.mpeg', '.mpe', '.mpv', '.mp4'],
       },
     }
   };
@@ -116,8 +116,10 @@ export class HomeComponent implements OnInit {
   }
 
   get acceptableFileTypes(): string[] {
-    const {imageTypes, videoTypes} = this.configs.file.accept;
-    return [...imageTypes, ...videoTypes];
+    const keys: string[] = Object.keys(this.configs.file.accept);
+    return keys.flatMap((key: string) => (
+      this.configs.file.accept[key]
+    ));
   }
 
   get fileTypes(): string {
