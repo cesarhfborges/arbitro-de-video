@@ -24,4 +24,8 @@ export class LayoutComponent implements OnInit {
   closeImage(): void {
     this.contextService.imageSelect(false);
   }
+
+  exportImage(): void {
+    this.contextService.exportImage();
+  }
 }

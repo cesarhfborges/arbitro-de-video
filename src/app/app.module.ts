@@ -23,7 +23,8 @@ import {
   heroChevronRight,
   heroChevronDoubleLeft,
   heroChevronDoubleRight,
-  heroPaperAirplane
+  heroPaperAirplane,
+  heroArrowDownTray
 } from '@ng-icons/heroicons/outline';
 import {BsModalService, ModalModule} from 'ngx-bootstrap/modal';
 import {AppRoutingModule} from './app-routing.module';
@@ -71,7 +72,8 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader => new Transla
       heroChevronRight,
       heroChevronDoubleLeft,
       heroChevronDoubleRight,
-      heroPaperAirplane
+      heroPaperAirplane,
+      heroArrowDownTray
     }),
     TranslateModule.forRoot({
       loader: {

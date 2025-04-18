@@ -4,6 +4,7 @@ import {ToastrService} from 'ngx-toastr';
 import {fakerPT_BR} from '@faker-js/faker';
 import {BsModalRef, BsModalService, ModalOptions} from 'ngx-bootstrap/modal';
 import {ModalVideoComponent} from '../../shared/components';
+import { saveAs } from 'file-saver';
 
 interface IPosition {
   x: number;
@@ -193,10 +194,6 @@ export class HomeComponent implements OnInit {
         topRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) - baseH},
         bottomRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) + baseH},
         bottomLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) + baseH}
-        // topLeft: {x: 50, y: 50},
-        // topRight: {x: 150, y: 50},
-        // bottomRight: {x: 150, y: 150},
-        // bottomLeft: {x: 50, y: 150}
       };
       this.createCanvas();
     };
@@ -213,6 +210,18 @@ export class HomeComponent implements OnInit {
         if (!value) {
           this.image = null;
         }
+      }
+    });
+    this.contextService.exportImageEvent().subscribe({
+      next: value => {
+        const canvas = this.ctx.canvas;
+        canvas.toBlob((blob) => {
+          if (blob) {
+            saveAs(blob, `analise-${new Date().getTime()}.png`);
+          } else {
+            console.error('Erro ao converter o canvas para Blob');
+          }
+        }, 'image/png');
       }
     });
   }
@@ -273,6 +282,9 @@ export class HomeComponent implements OnInit {
 
 
   onMouseDown(event: MouseEvent): void {
+    if (event.button !== 0) {
+      return;
+    }
     const {offsetX, offsetY} = event;
     this.isMouseDragging = true;
     for (const i of Object.keys(this.vertices)) {
@@ -291,7 +303,6 @@ export class HomeComponent implements OnInit {
 
   onMouseMove(event: MouseEvent): void {
     const {offsetX, offsetY} = event;
-    // console.log('offsetX; ', offsetX, ' - ', 'offsetY: ', offsetY);
     if (this.isMouseDragging) {
       if (this.isAreaDragging || this.selectedHandle !== null) {
         this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'none');
@@ -311,7 +322,6 @@ export class HomeComponent implements OnInit {
   }
 
   onMouseUp(): void {
-    // this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'default');
     this.isAreaDragging = false;
     this.selectedHandle = null;
     this.isMouseDragging = false;
@@ -326,7 +336,6 @@ export class HomeComponent implements OnInit {
     }, 10);
   }
 
-  // }
   addOffside(): void {
     this.offsideLines.push({
       x: -1,
