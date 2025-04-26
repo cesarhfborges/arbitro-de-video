@@ -16,15 +16,15 @@
           <li class="nav-item d-flex align-items-center" *ngIf="showClose | async">
             <button
               type="button"
-              class="btn btn-outline-info btns"
+              class="btn btn-outline-info action-button"
               (click)="exportImage()"
             >
               <ng-icon name="hero-arrow-down-tray" style="display: flex;"></ng-icon> Exportar
             </button>
           </li>
           <li class="nav-item d-flex align-items-center" *ngIf="showClose | async">
-            <button type="button" class="btn btn-outline-danger btns" (click)="closeImage()">
-              <ng-icon name="heroXMark" style="display: flex;"></ng-icon> Fechar
+            <button type="button" class="btn btn-outline-danger action-button" (click)="closeImage()">
+              <ng-icon name="hero-x-mark" style="display: flex;"></ng-icon> Fechar
             </button>
           </li>
         </ul>
