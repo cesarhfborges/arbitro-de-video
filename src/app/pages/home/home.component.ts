@@ -209,19 +209,22 @@ export class HomeComponent implements OnInit {
       next: value => {
         if (!value) {
           this.image = null;
+          this.offsideLines = [];
         }
       }
     });
     this.contextService.exportImageEvent().subscribe({
-      next: value => {
-        const canvas = this.ctx.canvas;
-        canvas.toBlob((blob) => {
-          if (blob) {
-            saveAs(blob, `analise-${new Date().getTime()}.png`);
-          } else {
-            console.error('Erro ao converter o canvas para Blob');
-          }
-        }, 'image/png');
+      next: () => {
+        if (this.ctx?.canvas) {
+          const canvas = this.ctx.canvas;
+          canvas.toBlob((blob) => {
+            if (blob) {
+              saveAs(blob, `analise-${new Date().getTime()}.png`);
+            } else {
+              console.error('Erro ao converter o canvas para Blob');
+            }
+          }, 'image/png');
+        }
       }
     });
   }
