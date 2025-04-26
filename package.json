@@ -1,6 +1,6 @@
 {
   "name": "angular-electron",
-  "version": "11.2.0",
+  "version": "1.0.0",
   "description": "Angular 14 with Electron 19 (Typescript + SASS + Hot Reload)",
   "homepage": "https://github.com/maximegris/angular-electron",
   "author": {
@@ -26,8 +26,9 @@
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "ng": "ng",
-    "start": "npm-run-all -p electron:serve ng:serve",
+    "start": "npm-run-all -p electron:serve ng:electron_serve",
     "ng:serve": "ng serve -c web -o",
+    "ng:electron_serve": "ng serve -c web",
     "ng:build": "ng build --base-href ./",
     "build": "npm run electron:serve-tsc && ng build --base-href ./",
     "build:dev": "npm run build -- -c dev",

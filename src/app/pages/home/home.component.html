@@ -1,7 +1,6 @@
 <div class="row flex-nowrap h-100">
   <div *ngIf="!!image" class="col sidenav px-2 pt-2 bg-dark d-flex flex-column gap-2">
     <p class="text-white">Analise</p>
-
     <div>
       <span class="text-light">Exibir</span>
       <select class="form-select" aria-label="Default select example" [(ngModel)]="options.lines" (input)="onChangeOptions()">

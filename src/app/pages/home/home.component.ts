@@ -71,8 +71,8 @@ export class HomeComponent implements OnInit {
     offside: null,
     offsideLineType: 'all',
     verticalReference: true,
-    offsideLineLen: .5,
-    offsideLineSpace: 1
+    offsideLineLen: 1.3,
+    offsideLineSpace: 3
   };
   protected offsideLines: { x: number; y: number; color: string; visible: boolean }[] = [];
   private modalRef: BsModalRef;
@@ -210,6 +210,21 @@ export class HomeComponent implements OnInit {
         if (!value) {
           this.image = null;
           this.offsideLines = [];
+          this.options = {
+            imageY: 50,
+            imageX: 50,
+            imageZ: 80,
+            filtro: 'none',
+            magnifier: false,
+            magnifierSize: 200,
+            magnifierZoom: 2,
+            lines: 'all',
+            offside: null,
+            offsideLineType: 'all',
+            verticalReference: true,
+            offsideLineLen: 1.3,
+            offsideLineSpace: 3
+          };
         }
       }
     });

@@ -1,19 +1,13 @@
 <div class="layout-container" appBlockMobile>
-  <header class="border-bottom bg-light py-3">
-
-    <div class="row">
-      <div class="col">
-        <ul class="nav">
-        </ul>
-
-      </div>
-      <div class="col d-flex justify-content-center align-items-center gap-3" [style.max-width.px]="280">
+  <header class="border-bottom bg-light">
+    <div class="d-flex align-items-center justify-content-between px-3" [style.height.px]="50">
+      <div class="d-flex flex-fill gap-2" [ngClass]="(showClose | async) ? '' : 'justify-content-center'">
         <img ngSrc="assets/icons/VAR_System_Logo.svg" alt="logotipo" [height]="30" width="30">
-        <span>Arbitro de Video (BETA)</span>
+        <span [style.line-height.px]="30">Arbitro de Video <span>(BETA)</span></span>
       </div>
-      <div class="col d-flex justify-content-end pe-4">
+      <div *ngIf="showClose | async">
         <ul class="nav gap-4">
-          <li class="nav-item d-flex align-items-center" *ngIf="showClose | async">
+          <li class="nav-item d-flex align-items-center">
             <button
               type="button"
               class="btn btn-outline-info action-button"
@@ -22,7 +16,7 @@
               <ng-icon name="hero-arrow-down-tray" style="display: flex;"></ng-icon> Exportar
             </button>
           </li>
-          <li class="nav-item d-flex align-items-center" *ngIf="showClose | async">
+          <li class="nav-item d-flex align-items-center">
             <button type="button" class="btn btn-outline-danger action-button" (click)="closeImage()">
               <ng-icon name="hero-x-mark" style="display: flex;"></ng-icon> Fechar
             </button>
@@ -30,6 +24,34 @@
         </ul>
       </div>
     </div>
+
+
+
+
+<!--    <div class="row" [style.height.px]="38">-->
+<!--      <div class="col d-flex justify-content-center align-items-center gap-3" [style.max-width.px]="280">-->
+<!--        <img ngSrc="assets/icons/VAR_System_Logo.svg" alt="logotipo" [height]="30" width="30">-->
+<!--        <span>Arbitro de Video (BETA)</span>-->
+<!--      </div>-->
+<!--      <div class="col d-flex justify-content-end pe-4">-->
+<!--        <ul class="nav gap-4">-->
+<!--          <li class="nav-item d-flex align-items-center" *ngIf="showClose | async">-->
+<!--            <button-->
+<!--              type="button"-->
+<!--              class="btn btn-outline-info action-button"-->
+<!--              (click)="exportImage()"-->
+<!--            >-->
+<!--              <ng-icon name="hero-arrow-down-tray" style="display: flex;"></ng-icon> Exportar-->
+<!--            </button>-->
+<!--          </li>-->
+<!--          <li class="nav-item d-flex align-items-center" *ngIf="showClose | async">-->
+<!--            <button type="button" class="btn btn-outline-danger action-button" (click)="closeImage()">-->
+<!--              <ng-icon name="hero-x-mark" style="display: flex;"></ng-icon> Fechar-->
+<!--            </button>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </div>-->
+<!--    </div>-->
   </header>
   <main class="container-fluid">
       <router-outlet></router-outlet>

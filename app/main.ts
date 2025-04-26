@@ -1,8 +1,9 @@
-import {app, BrowserWindow, screen} from 'electron';
+import {app, BrowserWindow, screen, globalShortcut} from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 
 app.commandLine.appendSwitch(' - ignore-gpu-blacklist');
+app.commandLine.appendSwitch('use-angle', 'gl');
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -10,14 +11,18 @@ const args = process.argv.slice(1),
 
 function createWindow(): BrowserWindow {
 
-  const size = screen.getPrimaryDisplay().workAreaSize;
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const size = primaryDisplay.workAreaSize;
 
   // Create the browser window.
   win = new BrowserWindow({
-    x: 0,
-    y: 0,
-    width: size.width,
-    height: size.height,
+    // x: primaryDisplay.bounds.x,
+    // y: primaryDisplay.bounds.y,
+    width: 800,
+    height: 600,
+    minWidth: 800,
+    minHeight: 600,
+    center: true,
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: (serve),
@@ -25,13 +30,16 @@ function createWindow(): BrowserWindow {
     },
   });
 
+  win.maximize();
+
   if (serve) {
     const debug = require('electron-debug');
     debug();
 
     require('electron-reloader')(module);
-    win.loadURL('http://localhost:4200');
+    win.loadURL('http://localhost:4200').catch();
   } else {
+    win.setMenuBarVisibility(false);
     // Path when running electron executable
     let pathIndex = './index.html';
 
@@ -41,7 +49,7 @@ function createWindow(): BrowserWindow {
     }
 
     const url = new URL(path.join('file:', __dirname, pathIndex));
-    win.loadURL(url.href);
+    win.loadURL(url.href).catch();
   }
 
   // Emitted when the window is closed.
@@ -69,6 +77,20 @@ try {
     if (process.platform !== 'darwin') {
       app.quit();
     }
+  });
+
+  app.on('browser-window-focus', function () {
+    globalShortcut.register("CommandOrControl+R", () => {
+      console.log("CommandOrControl+R is pressed: Shortcut Disabled");
+    });
+    globalShortcut.register("F5", () => {
+      console.log("F5 is pressed: Shortcut Disabled");
+    });
+  });
+
+  app.on('browser-window-blur', function () {
+    globalShortcut.unregister('CommandOrControl+R');
+    globalShortcut.unregister('F5');
   });
 
   app.on('activate', () => {
