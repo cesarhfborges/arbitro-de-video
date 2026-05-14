@@ -33,6 +33,7 @@ export class DecisionModalComponent implements OnInit, OnDestroy {
           this.capturedImageObjUrl = URL.createObjectURL(blob);
           this.safeImageUrl = this.sanitizer.bypassSecurityTrustUrl(this.capturedImageObjUrl);
           this.step = 2; // Avança para o passo 2
+          this.bsModalRef.setClass('modal-dialog-centered modal-fullscreen'); // Expande para tela inteira
           this.cdr.detectChanges(); // Força atualização da view
         }
       })
