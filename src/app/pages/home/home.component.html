@@ -148,7 +148,7 @@
             style="width: 100%; height: 100%; object-fit: contain;" (timeupdate)="onTimeUpdate()" (ended)="onVideoEnded()"></video>
         </div>
         <canvas #imageCanvas [style.top]="imageTop" [style.left]="imageLeft" [style.transform]="imageZoom"
-          [appImageZoom]="options.magnifier && !isPlaying" [appImageZoomVideo]="nativeVideo?.nativeElement || null" 
+          [appImageZoom]="options.magnifier && !isPlaying" [appImageZoomVideo]="activeVideoElement" 
           [appImageZoomImage]="image || null" [appImageZoomSize]="options.magnifierSize"
           [appImageZoomLevel]="options.magnifierZoom"></canvas>
       </div>
@@ -170,7 +170,9 @@
           </button>
 
           <div class="d-flex align-items-center gap-1">
-            <small>Vol</small>
+            <button class="btn btn-sm btn-secondary" (click)="toggleMute()" title="Mudo">
+              <ng-icon [name]="isMuted || videoVolume === 0 ? 'hero-speaker-x-mark' : 'hero-speaker-wave'"></ng-icon>
+            </button>
             <input type="range" class="input-range" style="width: 80px;" [min]="0" [max]="100" [(ngModel)]="videoVolume"
               (input)="onVolumeChange()" title="Volume">
           </div>

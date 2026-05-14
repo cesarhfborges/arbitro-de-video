@@ -50,6 +50,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('div2Element') div2Element!: ElementRef<HTMLDivElement>;
 
   image: HTMLImageElement | null = null;
+  activeVideoElement: HTMLVideoElement | null = null;
   localVideoSrc: string | null = null;
   mediaWidth: number = 0;
   mediaHeight: number = 0;
@@ -172,9 +173,32 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  isMuted: boolean = false;
+  previousVolume: number = 100;
+
+  toggleMute(): void {
+    if (this.nativeVideo) {
+      if (this.isMuted) {
+        this.videoVolume = this.previousVolume;
+        this.nativeVideo.nativeElement.volume = this.videoVolume / 100;
+        this.isMuted = false;
+      } else {
+        this.previousVolume = this.videoVolume;
+        this.videoVolume = 0;
+        this.nativeVideo.nativeElement.volume = 0;
+        this.isMuted = true;
+      }
+    }
+  }
+
   onVolumeChange(): void {
     if (this.nativeVideo) {
       this.nativeVideo.nativeElement.volume = this.videoVolume / 100;
+      if (this.videoVolume > 0 && this.isMuted) {
+        this.isMuted = false;
+      } else if (this.videoVolume == 0 && !this.isMuted) {
+        this.isMuted = true;
+      }
     }
   }
 
@@ -236,6 +260,7 @@ export class HomeComponent implements OnInit {
         if (!value) {
           this.image = null;
           this.localVideoSrc = null;
+          this.activeVideoElement = null;
           this.isPlaying = false;
           this.offsideLines = [];
           this.options = {
@@ -329,6 +354,7 @@ export class HomeComponent implements OnInit {
         this.localVideoSrc = URL.createObjectURL(file);
         setTimeout(() => {
           if (this.nativeVideo) {
+             this.activeVideoElement = this.nativeVideo.nativeElement;
              this.nativeVideo.nativeElement.onloadedmetadata = () => {
                 this.mediaWidth = this.nativeVideo.nativeElement.videoWidth;
                 this.mediaHeight = this.nativeVideo.nativeElement.videoHeight;
