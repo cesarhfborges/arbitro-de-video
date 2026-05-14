@@ -1,9 +1,9 @@
-import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
-import {ContextService} from '../../shared/services/context.service';
-import {ToastrService} from 'ngx-toastr';
-import {fakerPT_BR} from '@faker-js/faker';
-import {BsModalRef, BsModalService, ModalOptions} from 'ngx-bootstrap/modal';
-import {ModalVideoComponent} from '../../shared/components';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { ContextService } from '../../shared/services/context.service';
+import { ToastrService } from 'ngx-toastr';
+import { fakerPT_BR } from '@faker-js/faker';
+import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { ModalVideoComponent } from '../../shared/components';
 import { saveAs } from 'file-saver';
 
 interface IPosition {
@@ -82,10 +82,10 @@ export class HomeComponent implements OnInit {
   private isMouseDragging = false;
   private selectedHandle: string | null = null;
   private vertices: IVertex = {
-    topLeft: {x: 50, y: 50}, // Top-left
-    topRight: {x: 150, y: 50}, // Top-right
-    bottomRight: {x: 150, y: 150}, // Bottom-right
-    bottomLeft: {x: 50, y: 150} // Bottom-left
+    topLeft: { x: 50, y: 50 }, // Top-left
+    topRight: { x: 150, y: 50 }, // Top-right
+    bottomRight: { x: 150, y: 150 }, // Bottom-right
+    bottomLeft: { x: 50, y: 150 } // Bottom-left
   };
   private handleSize = 10;
 
@@ -103,10 +103,10 @@ export class HomeComponent implements OnInit {
         const baseV = this.image.width / 4;
         const baseH = this.image.height / 4;
         this.vertices = {
-          topLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) - baseH},
-          topRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) - baseH},
-          bottomRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) + baseH},
-          bottomLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) + baseH}
+          topLeft: { x: (this.image.width / 2) - baseV, y: (this.image.height / 2) - baseH },
+          topRight: { x: (this.image.width / 2) + baseV, y: (this.image.height / 2) - baseH },
+          bottomRight: { x: (this.image.width / 2) + baseV, y: (this.image.height / 2) + baseH },
+          bottomLeft: { x: (this.image.width / 2) - baseV, y: (this.image.height / 2) + baseH }
           // topLeft: {x: 50, y: 50},
           // topRight: {x: 150, y: 50},
           // bottomRight: {x: 150, y: 150},
@@ -132,27 +132,21 @@ export class HomeComponent implements OnInit {
   }
 
   get imageTop(): string {
-    if (this.imageCanvas) {
-      const el: HTMLCanvasElement = this.imageCanvas.nativeElement;
-      return `calc(${this.options.imageY}% - ${Math.round(el.height / 2)}px)`;
+    if (this.image && this.image.height) {
+      return `calc(${this.options.imageY}% - ${Math.round(this.image.height / 2)}px)`;
     }
     return '0';
   }
 
   get imageLeft(): string {
-    if (this.imageCanvas) {
-      const el: HTMLCanvasElement = this.imageCanvas.nativeElement;
-      // const {width} = this.imageSizes;
-      return `calc(${this.options.imageX}% - ${Math.round(el.width / 2)}px)`;
+    if (this.image && this.image.width) {
+      return `calc(${this.options.imageX}% - ${Math.round(this.image.width / 2)}px)`;
     }
     return '0';
   }
 
   get imageZoom(): string {
-    if (this.imageCanvas) {
-      return `scale(${this.options.imageZ / 100})`;
-    }
-    return 'scale(1)';
+    return `scale(${this.options.imageZ / 100})`;
   }
 
   openLink(): void {
@@ -190,10 +184,10 @@ export class HomeComponent implements OnInit {
       const baseV = this.image.width / 4;
       const baseH = this.image.height / 4;
       this.vertices = {
-        topLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) - baseH},
-        topRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) - baseH},
-        bottomRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) + baseH},
-        bottomLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) + baseH}
+        topLeft: { x: (this.image.width / 2) - baseV, y: (this.image.height / 2) - baseH },
+        topRight: { x: (this.image.width / 2) + baseV, y: (this.image.height / 2) - baseH },
+        bottomRight: { x: (this.image.width / 2) + baseV, y: (this.image.height / 2) + baseH },
+        bottomLeft: { x: (this.image.width / 2) - baseV, y: (this.image.height / 2) + baseH }
       };
       this.createCanvas();
     };
@@ -286,8 +280,6 @@ export class HomeComponent implements OnInit {
 
   createCanvas(): void {
     this.renderer.setStyle(this.imageCanvas.nativeElement, 'position', 'absolute');
-    this.renderer.setStyle(this.imageCanvas.nativeElement, 'top', 0);
-    this.renderer.setStyle(this.imageCanvas.nativeElement, 'left', 0);
     this.ctx = this.imageCanvas.nativeElement.getContext('2d');
     this.ctx.imageSmoothingEnabled = true;
 
@@ -303,7 +295,7 @@ export class HomeComponent implements OnInit {
     if (event.button !== 0) {
       return;
     }
-    const {offsetX, offsetY} = event;
+    const { offsetX, offsetY } = event;
     this.isMouseDragging = true;
     for (const i of Object.keys(this.vertices)) {
       const vertex = this.vertices[i];
@@ -320,11 +312,11 @@ export class HomeComponent implements OnInit {
   }
 
   onMouseMove(event: MouseEvent): void {
-    const {offsetX, offsetY} = event;
+    const { offsetX, offsetY } = event;
     if (this.isMouseDragging) {
       if (this.isAreaDragging || this.selectedHandle !== null) {
         this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'none');
-        this.vertices[this.selectedHandle] = {x: offsetX, y: offsetY};
+        this.vertices[this.selectedHandle] = { x: offsetX, y: offsetY };
         this.updateCanvas();
       } else if (this.options.offside !== null && ['all', 'guides'].includes(this.options.lines)) {
         this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'none');
@@ -466,7 +458,7 @@ export class HomeComponent implements OnInit {
 
   private desenharLinhasDeProjecao(posX: number, posY: number, color: string): void {
     // ** Captura os pontos do retângulo **
-    const {topLeft, topRight, bottomLeft, bottomRight} = this.vertices;
+    const { topLeft, topRight, bottomLeft, bottomRight } = this.vertices;
 
     if (['all', 'vertical'].includes(this.options.offsideLineType)) {
       // ** Calcular o ponto de fuga (homografia) Vertical **
@@ -598,10 +590,10 @@ export class HomeComponent implements OnInit {
     const pontos = [];
 
     const bordas = [
-      {x: 0, y: y0 + ((0 - x0) * (y1 - y0)) / (x1 - x0)}, // Esquerda
-      {x: canvasWidth, y: y0 + ((canvasWidth - x0) * (y1 - y0)) / (x1 - x0)}, // Direita
-      {x: x0 + ((0 - y0) * (x1 - x0)) / (y1 - y0), y: 0}, // Topo
-      {x: x0 + ((canvasHeight - y0) * (x1 - x0)) / (y1 - y0), y: canvasHeight}, // Fundo
+      { x: 0, y: y0 + ((0 - x0) * (y1 - y0)) / (x1 - x0) }, // Esquerda
+      { x: canvasWidth, y: y0 + ((canvasWidth - x0) * (y1 - y0)) / (x1 - x0) }, // Direita
+      { x: x0 + ((0 - y0) * (x1 - x0)) / (y1 - y0), y: 0 }, // Topo
+      { x: x0 + ((canvasHeight - y0) * (x1 - x0)) / (y1 - y0), y: canvasHeight }, // Fundo
     ];
 
     for (const ponto of bordas) {

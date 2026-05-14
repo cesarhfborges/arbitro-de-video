@@ -107,6 +107,11 @@ input[type=color] {
     border: 1px solid black;
     position: relative;
     overflow: hidden;
+
+    canvas {
+      position: absolute;
+      transform-origin: center center;
+    }
   }
 
   .div3 {
