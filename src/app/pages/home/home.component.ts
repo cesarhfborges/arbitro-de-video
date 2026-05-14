@@ -168,6 +168,7 @@ export class HomeComponent implements OnInit {
         this.nativeVideo.nativeElement.play();
       }
       this.isPlaying = !this.isPlaying;
+      this.updateCanvas();
     }
   }
 
@@ -226,6 +227,7 @@ export class HomeComponent implements OnInit {
 
   onVideoEnded(): void {
     this.isPlaying = false;
+    this.updateCanvas();
   }
 
   ngOnInit(): void {
@@ -401,7 +403,7 @@ export class HomeComponent implements OnInit {
 
 
   onMouseDown(event: MouseEvent): void {
-    if (event.button !== 0) {
+    if (event.button !== 0 || this.isPlaying) {
       return;
     }
     const { offsetX, offsetY } = event;
@@ -504,12 +506,15 @@ export class HomeComponent implements OnInit {
             break;
         }
       }
-      if (['all', 'area'].includes(this.options.lines)) {
-        this.criarArea();
-      }
-      if (['all', 'guides'].includes(this.options.lines)) {
-        if (!this.isAreaDragging || this.selectedHandle === null) {
-          this.criarLinhaImpedimento();
+      
+      if (!this.isPlaying) {
+        if (['all', 'area'].includes(this.options.lines)) {
+          this.criarArea();
+        }
+        if (['all', 'guides'].includes(this.options.lines)) {
+          if (!this.isAreaDragging || this.selectedHandle === null) {
+            this.criarLinhaImpedimento();
+          }
         }
       }
     }

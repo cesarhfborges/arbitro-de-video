@@ -5,7 +5,8 @@ import {Directive, ElementRef, HostListener, Input, Renderer2} from '@angular/co
 })
 export class ImageZoomDirective {
   @Input('appImageZoom') enabled = false;
-  @Input('appImageZoomSrc') src: string | null = null;
+  @Input('appImageZoomVideo') videoElement: HTMLVideoElement | null = null;
+  @Input('appImageZoomImage') imageElement: HTMLImageElement | null = null;
   @Input('appImageZoomSize') size: number = 150;
   @Input('appImageZoomLevel') level: number = 2;
 
@@ -56,6 +57,15 @@ export class ImageZoomDirective {
     const sy = Math.max(0, Math.min(this.canvasElement.height - zoomSize, y - zoomSize / 2));
     this.zoomCtx.clearRect(0, 0, this.size, this.size);
     this.zoomCtx.imageSmoothingEnabled = false;
+
+    // Desenha o vídeo ou a imagem como fundo da lupa
+    if (this.videoElement) {
+      this.zoomCtx.drawImage(this.videoElement, sx, sy, zoomSize, zoomSize, 0, 0, this.size, this.size);
+    } else if (this.imageElement) {
+      this.zoomCtx.drawImage(this.imageElement, sx, sy, zoomSize, zoomSize, 0, 0, this.size, this.size);
+    }
+
+    // Desenha as linhas do canvas por cima
     this.zoomCtx.drawImage(
       this.canvasElement,
       sx,
