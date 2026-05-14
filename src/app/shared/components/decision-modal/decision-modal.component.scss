@@ -1,0 +1,12 @@
+.result-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+  max-height: 60vh;
+  
+  img {
+    max-height: 60vh;
+    object-fit: contain;
+  }
+}

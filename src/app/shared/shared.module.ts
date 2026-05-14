@@ -1,9 +1,9 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
-import {FormsModule} from '@angular/forms';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
-import {ModalVideoComponent, PageNotFoundComponent, VideoPlayerComponent} from './components/';
+import { ModalVideoComponent, PageNotFoundComponent, VideoPlayerComponent } from './components/';
 import {
   BlockMobileDirective,
   EventZoomDirective,
@@ -11,15 +11,18 @@ import {
   ImageZoomDirective,
   WebviewDirective
 } from './directives/';
-import {ImageAnalisysComponent} from './components/image-analisys/image-analisys.component';
-import {ContextService} from './services/context.service';
-import {NgIconComponent} from '@ng-icons/core';
+import { ImageAnalisysComponent } from './components/image-analisys/image-analisys.component';
+import { DecisionModalComponent } from './components/decision-modal/decision-modal.component';
+import { ContextService } from './services/context.service';
+import { NgIconComponent, NgIconsModule } from '@ng-icons/core';
+import { heroHandThumbUp, heroHandThumbDown, heroCheck, heroXMark, heroArrowDownTray } from '@ng-icons/heroicons/outline';
 
 const COMPONENTS = [
   PageNotFoundComponent,
   ImageAnalisysComponent,
   VideoPlayerComponent,
-  ModalVideoComponent
+  ModalVideoComponent,
+  DecisionModalComponent
 ];
 
 const DIRECTIVES = [
@@ -36,15 +39,18 @@ const DIRECTIVES = [
     ...COMPONENTS,
     ...DIRECTIVES,
   ],
-  imports: [CommonModule, TranslateModule, FormsModule, NgIconComponent],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    FormsModule,
+    NgIconComponent,
+    NgIconsModule.withIcons({ heroHandThumbUp, heroHandThumbDown, heroCheck, heroXMark, heroArrowDownTray })
+  ],
   exports: [
     TranslateModule,
     FormsModule,
     ...COMPONENTS,
     ...DIRECTIVES,
-  ],
-  providers: [
-    ContextService
   ]
 })
 export class SharedModule {

@@ -285,32 +285,46 @@ export class HomeComponent implements OnInit {
     });
     this.contextService.exportImageEvent().subscribe({
       next: () => {
-        if (this.ctx?.canvas) {
-          if (this.localVideoSrc && this.nativeVideo) {
-             const exportCanvas = document.createElement('canvas');
-             exportCanvas.width = this.mediaWidth;
-             exportCanvas.height = this.mediaHeight;
-             const exportCtx = exportCanvas.getContext('2d');
-             if (exportCtx) {
-               exportCtx.drawImage(this.nativeVideo.nativeElement, 0, 0, this.mediaWidth, this.mediaHeight);
-               exportCtx.drawImage(this.ctx.canvas, 0, 0);
-               exportCanvas.toBlob((blob) => {
-                 if (blob) saveAs(blob, `analise-${new Date().getTime()}.png`);
-               }, 'image/png');
-             }
-          } else {
-            const canvas = this.ctx.canvas;
-            canvas.toBlob((blob) => {
-              if (blob) {
-                saveAs(blob, `analise-${new Date().getTime()}.png`);
-              } else {
-                this.toastr.error('Erro ao converter a análise', 'Ops...');
-              }
-            }, 'image/png');
-          }
-        }
+        this.getCapturedBlob((blob) => {
+          saveAs(blob, `analise-${new Date().getTime()}.png`);
+        });
       }
     });
+
+    this.contextService.requestFrameEvent().subscribe({
+      next: () => {
+        this.getCapturedBlob((blob) => {
+          this.contextService.setCapturedFrame(blob);
+        });
+      }
+    });
+  }
+
+  private getCapturedBlob(callback: (blob: Blob) => void): void {
+    if (this.ctx?.canvas) {
+      if (this.localVideoSrc && this.nativeVideo) {
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = this.mediaWidth;
+        exportCanvas.height = this.mediaHeight;
+        const exportCtx = exportCanvas.getContext('2d');
+        if (exportCtx) {
+          exportCtx.drawImage(this.nativeVideo.nativeElement, 0, 0, this.mediaWidth, this.mediaHeight);
+          exportCtx.drawImage(this.ctx.canvas, 0, 0);
+          exportCanvas.toBlob((blob) => {
+            if (blob) callback(blob);
+          }, 'image/png');
+        }
+      } else {
+        const canvas = this.ctx.canvas;
+        canvas.toBlob((blob) => {
+          if (blob) {
+            callback(blob);
+          } else {
+            this.toastr.error('Erro ao converter a análise', 'Ops...');
+          }
+        }, 'image/png');
+      }
+    }
   }
 
   handleFileInput(event: any): void {

@@ -8,7 +8,7 @@ import {HomeComponent} from './home/home.component';
 import {LayoutComponent} from './layout.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import { NgIconComponent, NgIconsModule } from '@ng-icons/core';
-import { heroPlay, heroPause, heroArrowDownTray, heroChevronLeft, heroChevronRight, heroSpeakerXMark, heroSpeakerWave } from '@ng-icons/heroicons/outline';
+import { heroPlay, heroPause, heroArrowDownTray, heroChevronLeft, heroChevronRight, heroSpeakerXMark, heroSpeakerWave, heroHandThumbUp, heroHandThumbDown, heroCheck, heroXMark } from '@ng-icons/heroicons/outline';
 
 @NgModule({
   declarations: [
@@ -23,7 +23,7 @@ import { heroPlay, heroPause, heroArrowDownTray, heroChevronLeft, heroChevronRig
     SharedModule,
     ReactiveFormsModule,
     NgIconComponent,
-    NgIconsModule.withIcons({ heroPlay, heroPause, heroArrowDownTray, heroChevronLeft, heroChevronRight, heroSpeakerXMark, heroSpeakerWave }),
+    NgIconsModule.withIcons({ heroPlay, heroPause, heroArrowDownTray, heroChevronLeft, heroChevronRight, heroSpeakerXMark, heroSpeakerWave, heroHandThumbUp, heroHandThumbDown, heroCheck, heroXMark }),
     PagesRoutingModule
   ]
 })

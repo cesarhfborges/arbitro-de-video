@@ -26,4 +26,23 @@ export class ContextService {
   public exportImage(): void {
     this.$exportImage.next(new Date().getTime());
   }
+
+  private $requestFrame: BehaviorSubject<number> = new BehaviorSubject(0);
+  private $frameCaptured: BehaviorSubject<Blob | null> = new BehaviorSubject<Blob | null>(null);
+
+  public requestFrameEvent(): Observable<number> {
+    return this.$requestFrame.asObservable();
+  }
+
+  public requestFrame(): void {
+    this.$requestFrame.next(new Date().getTime());
+  }
+
+  public frameCapturedEvent(): Observable<Blob | null> {
+    return this.$frameCaptured.asObservable();
+  }
+
+  public setCapturedFrame(blob: Blob): void {
+    this.$frameCaptured.next(blob);
+  }
 }
