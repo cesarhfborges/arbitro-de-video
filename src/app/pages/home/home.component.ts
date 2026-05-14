@@ -28,6 +28,7 @@ interface IOptions {
   verticalReference: boolean;
   offsideLineLen: number;
   offsideLineSpace: number;
+  handleSize: number;
 }
 
 interface IVertex {
@@ -82,7 +83,8 @@ export class HomeComponent implements OnInit {
     offsideLineType: 'all',
     verticalReference: true,
     offsideLineLen: 1.3,
-    offsideLineSpace: 3
+    offsideLineSpace: 3,
+    handleSize: 30
   };
   protected offsideLines: { x: number; y: number; color: string; visible: boolean }[] = [];
   private modalRef: BsModalRef;
@@ -97,7 +99,6 @@ export class HomeComponent implements OnInit {
     bottomRight: { x: 150, y: 150 }, // Bottom-right
     bottomLeft: { x: 50, y: 150 } // Bottom-left
   };
-  private handleSize = 10;
 
   constructor(
     private contextService: ContextService,
@@ -276,7 +277,8 @@ export class HomeComponent implements OnInit {
             offsideLineType: 'all',
             verticalReference: true,
             offsideLineLen: 1.3,
-            offsideLineSpace: 3
+            offsideLineSpace: 3,
+            handleSize: 30
           };
         }
       }
@@ -440,7 +442,7 @@ export class HomeComponent implements OnInit {
       const dy = offsetY - vertex.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (['all', 'area'].includes(this.options.lines) && distance <= this.handleSize / 2) {
+      if (['all', 'area'].includes(this.options.lines) && distance <= this.options.handleSize / 2) {
         this.isAreaDragging = true;
         this.selectedHandle = i;
         return;
@@ -585,7 +587,7 @@ export class HomeComponent implements OnInit {
     this.ctx.fillStyle = 'transparent';
     for (const vertex of Object.keys(this.vertices)) {
       this.ctx.beginPath();
-      this.ctx.arc(this.vertices[vertex].x, this.vertices[vertex].y, this.handleSize / 1.2, 0, Math.PI * 2);
+      this.ctx.arc(this.vertices[vertex].x, this.vertices[vertex].y, this.options.handleSize / 1.2, 0, Math.PI * 2);
       this.ctx.stroke();
       this.ctx.closePath();
     }
