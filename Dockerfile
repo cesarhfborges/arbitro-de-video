@@ -4,7 +4,7 @@ WORKDIR /app
 
 ENV NODE_OPTIONS="--max-old-space-size=768"
 
-COPY package.json package-lock.json ./
+COPY patch-ngx-bootstrap.js package.json package-lock.json ./
 
 RUN npm install --silent --legacy-peer-deps
 
