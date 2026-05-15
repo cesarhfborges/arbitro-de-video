@@ -1,9 +1,9 @@
-import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
-import {ContextService} from '../../shared/services/context.service';
-import {ToastrService} from 'ngx-toastr';
-import {fakerPT_BR} from '@faker-js/faker';
-import {BsModalRef, BsModalService, ModalOptions} from 'ngx-bootstrap/modal';
-import {ModalVideoComponent} from '../../shared/components';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener } from '@angular/core';
+import { ContextService } from '../../shared/services/context.service';
+import { ToastrService } from 'ngx-toastr';
+import { fakerPT_BR } from '@faker-js/faker';
+import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { ModalVideoComponent } from '../../shared/components';
 import { saveAs } from 'file-saver';
 
 interface IPosition {
@@ -28,6 +28,7 @@ interface IOptions {
   verticalReference: boolean;
   offsideLineLen: number;
   offsideLineSpace: number;
+  handleSize: number;
 }
 
 interface IVertex {
@@ -46,15 +47,25 @@ export class HomeComponent implements OnInit {
   @ViewChild('inputShowRect') inputShowRect: ElementRef<HTMLInputElement>;
   @ViewChild('imageCanvas') imageCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('inputFile') inputFile!: ElementRef<HTMLInputElement>;
-  @ViewChild('inputURL') inputURL!: ElementRef<HTMLInputElement>;
+  @ViewChild('nativeVideo') nativeVideo!: ElementRef<HTMLVideoElement>;
+  @ViewChild('div2Element') div2Element!: ElementRef<HTMLDivElement>;
 
   image: HTMLImageElement | null = null;
+  activeVideoElement: HTMLVideoElement | null = null;
+  localVideoSrc: string | null = null;
+  mediaWidth: number = 0;
+  mediaHeight: number = 0;
+  videoVolume: number = 100;
+  videoPlaybackRate: number = 1;
+  videoProgress: number = 0;
+  videoDuration: number = 100;
+  isPlaying: boolean = false;
 
   configs: any = {
     file: {
       accept: {
         imageTypes: ['.jpg', '.jpeg', '.png'],
-        // videoTypes: ['.mpg', '.mp2', '.mpeg', '.mpe', '.mpv', '.mp4'],
+        videoTypes: ['.mpg', '.mp2', '.mpeg', '.mpe', '.mpv', '.mp4', '.webm', '.ogg'],
       },
     }
   };
@@ -72,7 +83,8 @@ export class HomeComponent implements OnInit {
     offsideLineType: 'all',
     verticalReference: true,
     offsideLineLen: 1.3,
-    offsideLineSpace: 3
+    offsideLineSpace: 3,
+    handleSize: 30
   };
   protected offsideLines: { x: number; y: number; color: string; visible: boolean }[] = [];
   private modalRef: BsModalRef;
@@ -82,12 +94,11 @@ export class HomeComponent implements OnInit {
   private isMouseDragging = false;
   private selectedHandle: string | null = null;
   private vertices: IVertex = {
-    topLeft: {x: 50, y: 50}, // Top-left
-    topRight: {x: 150, y: 50}, // Top-right
-    bottomRight: {x: 150, y: 150}, // Bottom-right
-    bottomLeft: {x: 50, y: 150} // Bottom-left
+    topLeft: { x: 50, y: 50 }, // Top-left
+    topRight: { x: 150, y: 50 }, // Top-right
+    bottomRight: { x: 150, y: 150 }, // Bottom-right
+    bottomLeft: { x: 50, y: 150 } // Bottom-left
   };
-  private handleSize = 10;
 
   constructor(
     private contextService: ContextService,
@@ -100,13 +111,15 @@ export class HomeComponent implements OnInit {
       // this.image = event.target.result;
       this.image = new Image();
       this.image.onload = () => {
-        const baseV = this.image.width / 4;
-        const baseH = this.image.height / 4;
+        this.mediaWidth = this.image.width;
+        this.mediaHeight = this.image.height;
+        const baseV = this.mediaWidth / 4;
+        const baseH = this.mediaHeight / 4;
         this.vertices = {
-          topLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) - baseH},
-          topRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) - baseH},
-          bottomRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) + baseH},
-          bottomLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) + baseH}
+          topLeft: { x: (this.mediaWidth / 2) - baseV, y: (this.mediaHeight / 2) - baseH },
+          topRight: { x: (this.mediaWidth / 2) + baseV, y: (this.mediaHeight / 2) - baseH },
+          bottomRight: { x: (this.mediaWidth / 2) + baseV, y: (this.mediaHeight / 2) + baseH },
+          bottomLeft: { x: (this.mediaWidth / 2) - baseV, y: (this.mediaHeight / 2) + baseH }
           // topLeft: {x: 50, y: 50},
           // topRight: {x: 150, y: 50},
           // bottomRight: {x: 150, y: 150},
@@ -132,76 +145,114 @@ export class HomeComponent implements OnInit {
   }
 
   get imageTop(): string {
-    if (this.imageCanvas) {
-      const el: HTMLCanvasElement = this.imageCanvas.nativeElement;
-      return `calc(${this.options.imageY}% - ${Math.round(el.height / 2)}px)`;
+    if (this.mediaHeight) {
+      return `calc(${this.options.imageY}% - ${Math.round(this.mediaHeight / 2)}px)`;
     }
     return '0';
   }
 
   get imageLeft(): string {
-    if (this.imageCanvas) {
-      const el: HTMLCanvasElement = this.imageCanvas.nativeElement;
-      // const {width} = this.imageSizes;
-      return `calc(${this.options.imageX}% - ${Math.round(el.width / 2)}px)`;
+    if (this.mediaWidth) {
+      return `calc(${this.options.imageX}% - ${Math.round(this.mediaWidth / 2)}px)`;
     }
     return '0';
   }
 
   get imageZoom(): string {
-    if (this.imageCanvas) {
-      return `scale(${this.options.imageZ / 100})`;
-    }
-    return 'scale(1)';
+    return `scale(${this.options.imageZ / 100})`;
   }
 
-  openLink(): void {
-    this.toastr.clear();
-    const httpRegex = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
-    if (httpRegex.test(this.inputURL.nativeElement.value)) {
-      this.openModal(this.inputURL.nativeElement.value);
-      this.inputURL.nativeElement.value = '';
-    } else {
-      this.toastr.error('Link inválido.', 'Ops...');
+  togglePlay(): void {
+    if (this.nativeVideo) {
+      if (this.isPlaying) {
+        this.nativeVideo.nativeElement.pause();
+      } else {
+        this.nativeVideo.nativeElement.play();
+      }
+      this.isPlaying = !this.isPlaying;
+      this.updateCanvas();
     }
   }
 
-  openModal(url: string): void {
-    const initialState: ModalOptions = {
-      initialState: {
-        src: url
-      },
-      class: 'modal-fullscreen',
-      ignoreBackdropClick: true,
-      animated: true
-    };
-    this.modalRef = this.modalService.show(ModalVideoComponent, initialState);
-    this.modalRef.content.closeBtnName = 'Close';
-    this.modalRef.content.onclose = (value: string) => {
-      // Do something with myData and then hide
-      this.modalRef.hide();
-      this.onSelectImage(value);
-    };
+  isMuted: boolean = false;
+  previousVolume: number = 100;
+
+  toggleMute(): void {
+    if (this.nativeVideo) {
+      if (this.isMuted) {
+        this.videoVolume = this.previousVolume;
+        this.nativeVideo.nativeElement.volume = this.videoVolume / 100;
+        this.isMuted = false;
+      } else {
+        this.previousVolume = this.videoVolume;
+        this.videoVolume = 0;
+        this.nativeVideo.nativeElement.volume = 0;
+        this.isMuted = true;
+      }
+    }
   }
 
-  onSelectImage(event: string): void {
-    this.image = new Image();
-    this.image.onload = () => {
-      const baseV = this.image.width / 4;
-      const baseH = this.image.height / 4;
-      this.vertices = {
-        topLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) - baseH},
-        topRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) - baseH},
-        bottomRight: {x: (this.image.width / 2) + baseV, y: (this.image.height / 2) + baseH},
-        bottomLeft: {x: (this.image.width / 2) - baseV, y: (this.image.height / 2) + baseH}
-      };
-      this.createCanvas();
-    };
-    this.image.src = event;
-    this.contextService.imageSelect(true);
-    if (this.modalRef) {
-      this.modalRef.hide();
+  onVolumeChange(): void {
+    if (this.nativeVideo) {
+      this.nativeVideo.nativeElement.volume = this.videoVolume / 100;
+      if (this.videoVolume > 0 && this.isMuted) {
+        this.isMuted = false;
+      } else if (this.videoVolume == 0 && !this.isMuted) {
+        this.isMuted = true;
+      }
     }
+  }
+
+  onSpeedChange(): void {
+    if (this.nativeVideo) {
+      this.nativeVideo.nativeElement.playbackRate = this.videoPlaybackRate;
+    }
+  }
+
+  stepFrame(forward: boolean): void {
+    if (this.nativeVideo) {
+      // Avança ou retrocede ~1 frame considerando 30fps (0.033s)
+      const step = forward ? 0.0333 : -0.0333;
+      this.nativeVideo.nativeElement.currentTime += step;
+    }
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    // Evita conflitos com inputs
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+    
+    if (this.localVideoSrc) {
+      if (event.code === 'Space') {
+        event.preventDefault();
+        this.togglePlay();
+      } else if (event.code === 'ArrowRight') {
+        event.preventDefault();
+        this.stepFrame(true);
+      } else if (event.code === 'ArrowLeft') {
+        event.preventDefault();
+        this.stepFrame(false);
+      }
+    }
+  }
+
+  onSeek(): void {
+    if (this.nativeVideo) {
+      this.nativeVideo.nativeElement.currentTime = this.videoProgress;
+    }
+  }
+
+  onTimeUpdate(): void {
+    if (this.nativeVideo) {
+      this.videoProgress = this.nativeVideo.nativeElement.currentTime;
+    }
+  }
+
+  onVideoEnded(): void {
+    this.isPlaying = false;
+    this.updateCanvas();
   }
 
   ngOnInit(): void {
@@ -209,6 +260,9 @@ export class HomeComponent implements OnInit {
       next: value => {
         if (!value) {
           this.image = null;
+          this.localVideoSrc = null;
+          this.activeVideoElement = null;
+          this.isPlaying = false;
           this.offsideLines = [];
           this.options = {
             imageY: 50,
@@ -223,33 +277,126 @@ export class HomeComponent implements OnInit {
             offsideLineType: 'all',
             verticalReference: true,
             offsideLineLen: 1.3,
-            offsideLineSpace: 3
+            offsideLineSpace: 3,
+            handleSize: 30
           };
         }
       }
     });
     this.contextService.exportImageEvent().subscribe({
       next: () => {
-        if (this.ctx?.canvas) {
-          const canvas = this.ctx.canvas;
-          canvas.toBlob((blob) => {
-            if (blob) {
-              saveAs(blob, `analise-${new Date().getTime()}.png`);
-            } else {
-              console.error('Erro ao converter o canvas para Blob');
-            }
-          }, 'image/png');
-        }
+        this.getCapturedBlob((blob) => {
+          saveAs(blob, `analise-${new Date().getTime()}.png`);
+        });
       }
     });
+
+    this.contextService.requestFrameEvent().subscribe({
+      next: () => {
+        this.getCapturedBlob((blob) => {
+          this.contextService.setCapturedFrame(blob);
+        });
+      }
+    });
+  }
+
+  private getCapturedBlob(callback: (blob: Blob) => void): void {
+    if (this.ctx?.canvas) {
+      if (this.localVideoSrc && this.nativeVideo) {
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = this.mediaWidth;
+        exportCanvas.height = this.mediaHeight;
+        const exportCtx = exportCanvas.getContext('2d');
+        if (exportCtx) {
+          exportCtx.drawImage(this.nativeVideo.nativeElement, 0, 0, this.mediaWidth, this.mediaHeight);
+          exportCtx.drawImage(this.ctx.canvas, 0, 0);
+          exportCanvas.toBlob((blob) => {
+            if (blob) callback(blob);
+          }, 'image/png');
+        }
+      } else {
+        const canvas = this.ctx.canvas;
+        canvas.toBlob((blob) => {
+          if (blob) {
+            callback(blob);
+          } else {
+            this.toastr.error('Erro ao converter a análise', 'Ops...');
+          }
+        }, 'image/png');
+      }
+    }
   }
 
   handleFileInput(event: any): void {
     this.toastr.clear();
     const files: FileList = event.target.files;
     if (!!files && files.length === 1) {
-      if (this.acceptableFileTypes.some(str => files[0].name.includes(str))) {
-        this.reader.readAsDataURL(files[0]);
+      const file = files[0];
+      const isImage = this.configs.file.accept.imageTypes.some((str: string) => file.name.toLowerCase().endsWith(str));
+      const isVideo = this.configs.file.accept.videoTypes.some((str: string) => file.name.toLowerCase().endsWith(str));
+      
+      if (isImage) {
+        this.localVideoSrc = null;
+        this.image = new Image();
+        this.image.onload = () => {
+          this.mediaWidth = this.image.width;
+          this.mediaHeight = this.image.height;
+          
+          if (this.div2Element) {
+            const containerWidth = this.div2Element.nativeElement.clientWidth;
+            const containerHeight = this.div2Element.nativeElement.clientHeight;
+            const zoomX = (containerWidth / this.mediaWidth) * 100;
+            const zoomY = (containerHeight / this.mediaHeight) * 100;
+            this.options.imageZ = Math.min(zoomX, zoomY, 100);
+          }
+          
+          const baseV = this.mediaWidth / 4;
+          const baseH = this.mediaHeight / 4;
+          this.vertices = {
+            topLeft: { x: (this.mediaWidth / 2) - baseV, y: (this.mediaHeight / 2) - baseH },
+            topRight: { x: (this.mediaWidth / 2) + baseV, y: (this.mediaHeight / 2) - baseH },
+            bottomRight: { x: (this.mediaWidth / 2) + baseV, y: (this.mediaHeight / 2) + baseH },
+            bottomLeft: { x: (this.mediaWidth / 2) - baseV, y: (this.mediaHeight / 2) + baseH }
+          };
+          this.createCanvas();
+          this.contextService.imageSelect(true);
+        };
+        this.reader.onload = (e: any) => {
+          if (this.image) this.image.src = e.target.result;
+        };
+        this.reader.readAsDataURL(file);
+      } else if (isVideo) {
+        this.image = null;
+        this.localVideoSrc = URL.createObjectURL(file);
+        setTimeout(() => {
+          if (this.nativeVideo) {
+             this.activeVideoElement = this.nativeVideo.nativeElement;
+             this.nativeVideo.nativeElement.onloadedmetadata = () => {
+                this.mediaWidth = this.nativeVideo.nativeElement.videoWidth;
+                this.mediaHeight = this.nativeVideo.nativeElement.videoHeight;
+                this.videoDuration = this.nativeVideo.nativeElement.duration;
+                
+                if (this.div2Element) {
+                  const containerWidth = this.div2Element.nativeElement.clientWidth;
+                  const containerHeight = this.div2Element.nativeElement.clientHeight;
+                  const zoomX = (containerWidth / this.mediaWidth) * 100;
+                  const zoomY = (containerHeight / this.mediaHeight) * 100;
+                  this.options.imageZ = Math.min(zoomX, zoomY, 100);
+                }
+                
+                const baseV = this.mediaWidth / 4;
+                const baseH = this.mediaHeight / 4;
+                this.vertices = {
+                  topLeft: { x: (this.mediaWidth / 2) - baseV, y: (this.mediaHeight / 2) - baseH },
+                  topRight: { x: (this.mediaWidth / 2) + baseV, y: (this.mediaHeight / 2) - baseH },
+                  bottomRight: { x: (this.mediaWidth / 2) + baseV, y: (this.mediaHeight / 2) + baseH },
+                  bottomLeft: { x: (this.mediaWidth / 2) - baseV, y: (this.mediaHeight / 2) + baseH }
+                };
+                this.createCanvas();
+                this.contextService.imageSelect(true);
+             };
+          }
+        }, 0);
       } else {
         this.inputFile.nativeElement.value = '';
         this.toastr.error('Tipo de arquivo não suportado.', 'Ops...');
@@ -286,8 +433,6 @@ export class HomeComponent implements OnInit {
 
   createCanvas(): void {
     this.renderer.setStyle(this.imageCanvas.nativeElement, 'position', 'absolute');
-    this.renderer.setStyle(this.imageCanvas.nativeElement, 'top', 0);
-    this.renderer.setStyle(this.imageCanvas.nativeElement, 'left', 0);
     this.ctx = this.imageCanvas.nativeElement.getContext('2d');
     this.ctx.imageSmoothingEnabled = true;
 
@@ -300,10 +445,10 @@ export class HomeComponent implements OnInit {
 
 
   onMouseDown(event: MouseEvent): void {
-    if (event.button !== 0) {
+    if (event.button !== 0 || this.isPlaying) {
       return;
     }
-    const {offsetX, offsetY} = event;
+    const { offsetX, offsetY } = event;
     this.isMouseDragging = true;
     for (const i of Object.keys(this.vertices)) {
       const vertex = this.vertices[i];
@@ -311,7 +456,7 @@ export class HomeComponent implements OnInit {
       const dy = offsetY - vertex.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (['all', 'area'].includes(this.options.lines) && distance <= this.handleSize / 2) {
+      if (['all', 'area'].includes(this.options.lines) && distance <= this.options.handleSize / 2) {
         this.isAreaDragging = true;
         this.selectedHandle = i;
         return;
@@ -320,11 +465,11 @@ export class HomeComponent implements OnInit {
   }
 
   onMouseMove(event: MouseEvent): void {
-    const {offsetX, offsetY} = event;
+    const { offsetX, offsetY } = event;
     if (this.isMouseDragging) {
       if (this.isAreaDragging || this.selectedHandle !== null) {
         this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'none');
-        this.vertices[this.selectedHandle] = {x: offsetX, y: offsetY};
+        this.vertices[this.selectedHandle] = { x: offsetX, y: offsetY };
         this.updateCanvas();
       } else if (this.options.offside !== null && ['all', 'guides'].includes(this.options.lines)) {
         this.renderer.setStyle(this.imageCanvas.nativeElement, 'cursor', 'none');
@@ -386,26 +531,32 @@ export class HomeComponent implements OnInit {
   private updateCanvas(): void {
     if (!!this.ctx) {
       this.ctx.clearRect(0, 0, this.imageCanvas.nativeElement.width, this.imageCanvas.nativeElement.height);
-      this.imageCanvas.nativeElement.width = this.image.width;
-      this.imageCanvas.nativeElement.height = this.image.height;
-      this.ctx.drawImage(this.image, 0, 0);
-      switch (this.options.filtro) {
-        case 'invert':
-          this.inverterCores();
-          break;
-        case 'grayscale':
-          this.aplicarFiltroCinza();
-          break;
-        case 'sepia':
-          this.aplicarFiltroSepia();
-          break;
+      this.imageCanvas.nativeElement.width = this.mediaWidth;
+      this.imageCanvas.nativeElement.height = this.mediaHeight;
+      
+      if (this.image) {
+        this.ctx.drawImage(this.image, 0, 0);
+        switch (this.options.filtro) {
+          case 'invert':
+            this.inverterCores();
+            break;
+          case 'grayscale':
+            this.aplicarFiltroCinza();
+            break;
+          case 'sepia':
+            this.aplicarFiltroSepia();
+            break;
+        }
       }
-      if (['all', 'area'].includes(this.options.lines)) {
-        this.criarArea();
-      }
-      if (['all', 'guides'].includes(this.options.lines)) {
-        if (!this.isAreaDragging || this.selectedHandle === null) {
-          this.criarLinhaImpedimento();
+      
+      if (!this.isPlaying) {
+        if (['all', 'area'].includes(this.options.lines)) {
+          this.criarArea();
+        }
+        if (['all', 'guides'].includes(this.options.lines)) {
+          if (!this.isAreaDragging || this.selectedHandle === null) {
+            this.criarLinhaImpedimento();
+          }
         }
       }
     }
@@ -450,7 +601,7 @@ export class HomeComponent implements OnInit {
     this.ctx.fillStyle = 'transparent';
     for (const vertex of Object.keys(this.vertices)) {
       this.ctx.beginPath();
-      this.ctx.arc(this.vertices[vertex].x, this.vertices[vertex].y, this.handleSize / 1.2, 0, Math.PI * 2);
+      this.ctx.arc(this.vertices[vertex].x, this.vertices[vertex].y, this.options.handleSize / 1.2, 0, Math.PI * 2);
       this.ctx.stroke();
       this.ctx.closePath();
     }
@@ -466,7 +617,7 @@ export class HomeComponent implements OnInit {
 
   private desenharLinhasDeProjecao(posX: number, posY: number, color: string): void {
     // ** Captura os pontos do retângulo **
-    const {topLeft, topRight, bottomLeft, bottomRight} = this.vertices;
+    const { topLeft, topRight, bottomLeft, bottomRight } = this.vertices;
 
     if (['all', 'vertical'].includes(this.options.offsideLineType)) {
       // ** Calcular o ponto de fuga (homografia) Vertical **
@@ -598,10 +749,10 @@ export class HomeComponent implements OnInit {
     const pontos = [];
 
     const bordas = [
-      {x: 0, y: y0 + ((0 - x0) * (y1 - y0)) / (x1 - x0)}, // Esquerda
-      {x: canvasWidth, y: y0 + ((canvasWidth - x0) * (y1 - y0)) / (x1 - x0)}, // Direita
-      {x: x0 + ((0 - y0) * (x1 - x0)) / (y1 - y0), y: 0}, // Topo
-      {x: x0 + ((canvasHeight - y0) * (x1 - x0)) / (y1 - y0), y: canvasHeight}, // Fundo
+      { x: 0, y: y0 + ((0 - x0) * (y1 - y0)) / (x1 - x0) }, // Esquerda
+      { x: canvasWidth, y: y0 + ((canvasWidth - x0) * (y1 - y0)) / (x1 - x0) }, // Direita
+      { x: x0 + ((0 - y0) * (x1 - x0)) / (y1 - y0), y: 0 }, // Topo
+      { x: x0 + ((canvasHeight - y0) * (x1 - x0)) / (y1 - y0), y: canvasHeight }, // Fundo
     ];
 
     for (const ponto of bordas) {

@@ -1,0 +1,123 @@
+﻿
+> angular-electron@1.0.0 build
+> npm run electron:serve-tsc && ng build --base-href ./
+
+
+> angular-electron@1.0.0 electron:serve-tsc
+> tsc -p tsconfig.serve.json
+
+npm : - Generating browser application bundles (phase: setup)...
+No linha:1 caractere:1
++ npm run build 2>&1 | Out-File -Encoding utf8 build_output.log ; Get-C ...
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (- Generating br...hase: setup)...:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ÔêÜ Browser application bundle generation complete.
+ÔêÜ Browser application bundle generation complete.
+[1m[33m
+Warning: C:\projetos\arbitro-de-video\node_modules\@angular\core\fesm2022\core.mjs depends on 'rxjs'. CommonJS or AMD 
+dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+Warning: C:\projetos\arbitro-de-video\node_modules\@angular\core\fesm2022\core.mjs depends on 'rxjs/operators'. 
+CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+Warning: C:\projetos\arbitro-de-video\src\app\pages\home\home.component.ts depends on 'file-saver'. CommonJS or AMD 
+dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+[39m[22m
+[1m[31m
+./node_modules/ngx-toastr/fesm2022/ngx-toastr.mjs:907:14-26 - Error: export 'linkedSignal' (imported as 
+'linkedSignal') was not found in '@angular/core' (possible exports: ANIMATION_MODULE_TYPE, APP_BOOTSTRAP_LISTENER, 
+APP_ID, APP_INITIALIZER, AfterRenderPhase, ApplicationInitStatus, ApplicationModule, ApplicationRef, Attribute, 
+COMPILER_OPTIONS, CSP_NONCE, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, ChangeDetectorRef, Compiler, 
+CompilerFactory, Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, ContentChild, ContentChildren, 
+DEFAULT_CURRENCY_CODE, DebugElement, DebugEventListener, DebugNode, DefaultIterableDiffer, DestroyRef, Directive, 
+ENVIRONMENT_INITIALIZER, ElementRef, EmbeddedViewRef, EnvironmentInjector, ErrorHandler, EventEmitter, 
+ExperimentalPendingTasks, HOST_TAG_NAME, Host, HostAttributeToken, HostBinding, HostListener, INJECTOR, Inject, 
+InjectFlags, Injectable, InjectionToken, Injector, Input, IterableDiffers, KeyValueDiffers, LOCALE_ID, 
+MissingTranslationStrategy, ModuleWithComponentFactories, NO_ERRORS_SCHEMA, NgModule, NgModuleFactory, NgModuleRef, 
+NgProbeToken, NgZone, Optional, Output, OutputEmitterRef, PACKAGE_ROOT_URL, PLATFORM_ID, PLATFORM_INITIALIZER, Pipe, 
+PlatformRef, Query, QueryList, Renderer2, RendererFactory2, RendererStyleFlags2, Sanitizer, SecurityContext, Self, 
+SimpleChange, SkipSelf, TRANSLATIONS, TRANSLATIONS_FORMAT, TemplateRef, Testability, TestabilityRegistry, 
+TransferState, Type, VERSION, Version, ViewChild, ViewChildren, ViewContainerRef, ViewEncapsulation, ViewRef, 
+afterNextRender, afterRender, asNativeElements, assertInInjectionContext, assertNotInReactiveContext, assertPlatform, 
+booleanAttribute, computed, contentChild, contentChildren, createComponent, createEnvironmentInjector, createNgModule, 
+createNgModuleRef, createPlatform, createPlatformFactory, defineInjectable, destroyPlatform, effect, enableProdMode, 
+forwardRef, getDebugNode, getModuleFactory, getNgModuleById, getPlatform, importProvidersFrom, inject, input, 
+isDevMode, isSignal, isStandalone, makeEnvironmentProviders, makeStateKey, mergeApplicationConfig, model, 
+numberAttribute, output, platformCore, provideExperimentalCheckNoChangesForDebug, 
+provideExperimentalZonelessChangeDetection, provideZoneChangeDetection, reflectComponentType, resolveForwardRef, 
+runInInjectionContext, setTestabilityGetter, signal, untracked, viewChild, viewChildren, ╔ÁALLOW_MULTIPLE_PLATFORMS, 
+╔ÁAfterRenderManager, ╔ÁCONTAINER_HEADER_OFFSET, ╔ÁChangeDetectionScheduler, ╔ÁChangeDetectionSchedulerImpl, 
+╔ÁComponentFactory, ╔ÁConsole, ╔ÁDEFAULT_LOCALE_ID, ╔ÁDEFER_BLOCK_CONFIG, ╔ÁDEFER_BLOCK_DEPENDENCY_INTERCEPTOR, 
+╔ÁDeferBlockBehavior, ╔ÁDeferBlockState, ╔ÁEffectScheduler, ╔ÁIMAGE_CONFIG, ╔ÁIMAGE_CONFIG_DEFAULTS, ╔ÁINJECTOR_SCOPE, 
+╔ÁINPUT_SIGNAL_BRAND_WRITE_TYPE, ╔ÁINTERNAL_APPLICATION_ERROR_HANDLER, ╔ÁIS_HYDRATION_DOM_REUSE_ENABLED, 
+╔ÁJSACTION_EVENT_CONTRACT, ╔ÁLContext, ╔ÁLifecycleHooksFeature, ╔ÁLocaleDataIndex, ╔ÁNG_COMP_DEF, ╔ÁNG_DIR_DEF, 
+╔ÁNG_ELEMENT_ID, ╔ÁNG_INJ_DEF, ╔ÁNG_MOD_DEF, ╔ÁNG_PIPE_DEF, ╔ÁNG_PROV_DEF, ╔ÁNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR, 
+╔ÁNO_CHANGE, ╔ÁNgModuleFactory, ╔ÁNoopNgZone, ╔ÁPROVIDED_NG_ZONE, ╔ÁPendingTasks, ╔ÁReflectionCapabilities, 
+╔ÁRender3ComponentFactory, ╔ÁRender3ComponentRef, ╔ÁRender3NgModuleRef, ╔ÁRuntimeError, ╔ÁSIGNAL, 
+╔ÁSSR_CONTENT_INTEGRITY_MARKER, ╔ÁTESTABILITY, ╔ÁTESTABILITY_GETTER, ╔ÁUSE_RUNTIME_DEPS_TRACKER_FOR_JIT, ╔ÁViewRef, 
+╔ÁXSS_SECURITY_URL, ╔ÁZONELESS_ENABLED, ╔Á_sanitizeHtml, ╔Á_sanitizeUrl, ╔ÁallowSanitizationBypassAndThrow, 
+╔ÁannotateForHydration, ╔ÁbypassSanitizationTrustHtml, ╔ÁbypassSanitizationTrustResourceUrl, 
+╔ÁbypassSanitizationTrustScript, ╔ÁbypassSanitizationTrustStyle, ╔ÁbypassSanitizationTrustUrl, 
+╔ÁclearResolutionOfComponentResourcesQueue, ╔ÁcompileComponent, ╔ÁcompileDirective, ╔ÁcompileNgModule, 
+╔ÁcompileNgModuleDefs, ╔ÁcompileNgModuleFactory, ╔ÁcompilePipe, ╔ÁconvertToBitFlags, ╔ÁcreateInjector, 
+╔ÁdefaultIterableDiffers, ╔ÁdefaultKeyValueDiffers, ╔ÁdepsTracker, ╔ÁdetectChangesInViewIfRequired, ╔ÁdevModeEqual, 
+╔ÁfindLocaleData, ╔ÁflushModuleScopingQueueAsMuchAsPossible, ╔ÁformatRuntimeError, 
+╔ÁgenerateStandaloneInDeclarationsError, ╔ÁgetAsyncClassMetadataFn, ╔ÁgetDebugNode, ╔ÁgetDeferBlocks, ╔ÁgetDirectives, 
+╔ÁgetHostElement, ╔ÁgetInjectableDef, ╔ÁgetLContext, ╔ÁgetLocaleCurrencyCode, ╔ÁgetLocalePluralCase, 
+╔ÁgetOutputDestroyRef, ╔ÁgetSanitizationBypassType, ╔ÁgetUnknownElementStrictMode, ╔ÁgetUnknownPropertyStrictMode, 
+╔Áglobal, ╔ÁinjectChangeDetectorRef, ╔ÁinternalCreateApplication, ╔ÁinternalProvideZoneChangeDetection, 
+╔ÁisBoundToModule, ╔ÁisComponentDefPendingResolution, ╔ÁisEnvironmentProviders, ╔ÁisInjectable, ╔ÁisNgModule, 
+╔ÁisPromise, ╔ÁisSubscribable, ╔ÁnoSideEffects, ╔ÁpatchComponentDefWithScope, ╔ÁperformanceMarkFeature, 
+╔ÁreadHydrationInfo, ╔ÁregisterLocaleData, ╔ÁrenderDeferBlockState, ╔ÁresetCompiledComponents, ╔ÁresetJitOptions, 
+╔ÁresolveComponentResources, ╔ÁrestoreComponentResolutionQueue, ╔ÁsetAllowDuplicateNgModuleIdsForTest, 
+╔ÁsetAlternateWeakRefImpl, ╔ÁsetClassDebugInfo, ╔ÁsetClassMetadata, ╔ÁsetClassMetadataAsync, ╔ÁsetCurrentInjector, 
+╔ÁsetDocument, ╔ÁsetInjectorProfilerContext, ╔ÁsetLocaleId, ╔ÁsetUnknownElementStrictMode, 
+╔ÁsetUnknownPropertyStrictMode, ╔Ástore, ╔Ástringify, ╔ÁtransitiveScopesFor, ╔ÁtriggerResourceLoading, 
+╔ÁtruncateMiddle, ╔ÁunregisterLocaleData, ╔ÁunwrapSafeValue, ╔ÁunwrapWritableSignal, ╔ÁwhenStable, ╔ÁwithDomHydration, 
+╔ÁwithEventReplay, ╔ÁwithI18nSupport, ╔Á╔ÁCopyDefinitionFeature, ╔Á╔ÁFactoryTarget, ╔Á╔ÁHostDirectivesFeature, 
+╔Á╔ÁInheritDefinitionFeature, ╔Á╔ÁInputTransformsFeature, ╔Á╔ÁNgOnChangesFeature, ╔Á╔ÁProvidersFeature, 
+╔Á╔ÁStandaloneFeature, ╔Á╔Áadvance, ╔Á╔Áattribute, ╔Á╔ÁattributeInterpolate1, ╔Á╔ÁattributeInterpolate2, 
+╔Á╔ÁattributeInterpolate3, ╔Á╔ÁattributeInterpolate4, ╔Á╔ÁattributeInterpolate5, ╔Á╔ÁattributeInterpolate6, 
+╔Á╔ÁattributeInterpolate7, ╔Á╔ÁattributeInterpolate8, ╔Á╔ÁattributeInterpolateV, ╔Á╔ÁclassMap, 
+╔Á╔ÁclassMapInterpolate1, ╔Á╔ÁclassMapInterpolate2, ╔Á╔ÁclassMapInterpolate3, ╔Á╔ÁclassMapInterpolate4, 
+╔Á╔ÁclassMapInterpolate5, ╔Á╔ÁclassMapInterpolate6, ╔Á╔ÁclassMapInterpolate7, ╔Á╔ÁclassMapInterpolate8, 
+╔Á╔ÁclassMapInterpolateV, ╔Á╔ÁclassProp, ╔Á╔ÁcomponentInstance, ╔Á╔Áconditional, ╔Á╔ÁcontentQuery, 
+╔Á╔ÁcontentQuerySignal, ╔Á╔ÁdeclareLet, ╔Á╔Ádefer, ╔Á╔ÁdeferEnableTimerScheduling, ╔Á╔ÁdeferOnHover, ╔Á╔ÁdeferOnIdle, 
+╔Á╔ÁdeferOnImmediate, ╔Á╔ÁdeferOnInteraction, ╔Á╔ÁdeferOnTimer, ╔Á╔ÁdeferOnViewport, ╔Á╔ÁdeferPrefetchOnHover, 
+╔Á╔ÁdeferPrefetchOnIdle, ╔Á╔ÁdeferPrefetchOnImmediate, ╔Á╔ÁdeferPrefetchOnInteraction, ╔Á╔ÁdeferPrefetchOnTimer, 
+╔Á╔ÁdeferPrefetchOnViewport, ╔Á╔ÁdeferPrefetchWhen, ╔Á╔ÁdeferWhen, ╔Á╔ÁdefineComponent, ╔Á╔ÁdefineDirective, 
+╔Á╔ÁdefineInjectable, ╔Á╔ÁdefineInjector, ╔Á╔ÁdefineNgModule, ╔Á╔ÁdefinePipe, ╔Á╔ÁdirectiveInject, 
+╔Á╔ÁdisableBindings, ╔Á╔Áelement, ╔Á╔ÁelementContainer, ╔Á╔ÁelementContainerEnd, ╔Á╔ÁelementContainerStart, 
+╔Á╔ÁelementEnd, ╔Á╔ÁelementStart, ╔Á╔ÁenableBindings, ╔Á╔ÁgetComponentDepsFactory, ╔Á╔ÁgetCurrentView, 
+╔Á╔ÁgetInheritedFactory, ╔Á╔ÁhostProperty, ╔Á╔Ái18n, ╔Á╔Ái18nApply, ╔Á╔Ái18nAttributes, ╔Á╔Ái18nEnd, ╔Á╔Ái18nExp, 
+╔Á╔Ái18nPostprocess, ╔Á╔Ái18nStart, ╔Á╔Áinject, ╔Á╔ÁinjectAttribute, ╔Á╔ÁinvalidFactory, ╔Á╔ÁinvalidFactoryDep, 
+╔Á╔Álistener, ╔Á╔ÁloadQuery, ╔Á╔ÁnamespaceHTML, ╔Á╔ÁnamespaceMathML, ╔Á╔ÁnamespaceSVG, ╔Á╔ÁnextContext, 
+╔Á╔ÁngDeclareClassMetadata, ╔Á╔ÁngDeclareClassMetadataAsync, ╔Á╔ÁngDeclareComponent, ╔Á╔ÁngDeclareDirective, 
+╔Á╔ÁngDeclareFactory, ╔Á╔ÁngDeclareInjectable, ╔Á╔ÁngDeclareInjector, ╔Á╔ÁngDeclareNgModule, ╔Á╔ÁngDeclarePipe, 
+╔Á╔Ápipe, ╔Á╔ÁpipeBind1, ╔Á╔ÁpipeBind2, ╔Á╔ÁpipeBind3, ╔Á╔ÁpipeBind4, ╔Á╔ÁpipeBindV, ╔Á╔Áprojection, 
+╔Á╔ÁprojectionDef, ╔Á╔Áproperty, ╔Á╔ÁpropertyInterpolate, ╔Á╔ÁpropertyInterpolate1, ╔Á╔ÁpropertyInterpolate2, 
+╔Á╔ÁpropertyInterpolate3, ╔Á╔ÁpropertyInterpolate4, ╔Á╔ÁpropertyInterpolate5, ╔Á╔ÁpropertyInterpolate6, 
+╔Á╔ÁpropertyInterpolate7, ╔Á╔ÁpropertyInterpolate8, ╔Á╔ÁpropertyInterpolateV, ╔Á╔ÁpureFunction0, ╔Á╔ÁpureFunction1, 
+╔Á╔ÁpureFunction2, ╔Á╔ÁpureFunction3, ╔Á╔ÁpureFunction4, ╔Á╔ÁpureFunction5, ╔Á╔ÁpureFunction6, ╔Á╔ÁpureFunction7, 
+╔Á╔ÁpureFunction8, ╔Á╔ÁpureFunctionV, ╔Á╔ÁqueryAdvance, ╔Á╔ÁqueryRefresh, ╔Á╔ÁreadContextLet, ╔Á╔Áreference, 
+╔Á╔ÁregisterNgModuleType, ╔Á╔Árepeater, ╔Á╔ÁrepeaterCreate, ╔Á╔ÁrepeaterTrackByIdentity, ╔Á╔ÁrepeaterTrackByIndex, 
+╔Á╔ÁresetView, ╔Á╔ÁresolveBody, ╔Á╔ÁresolveDocument, ╔Á╔ÁresolveWindow, ╔Á╔ÁrestoreView, ╔Á╔ÁsanitizeHtml, 
+╔Á╔ÁsanitizeResourceUrl, ╔Á╔ÁsanitizeScript, ╔Á╔ÁsanitizeStyle, ╔Á╔ÁsanitizeUrl, ╔Á╔ÁsanitizeUrlOrResourceUrl, 
+╔Á╔ÁsetComponentScope, ╔Á╔ÁsetNgModuleScope, ╔Á╔ÁstoreLet, ╔Á╔ÁstyleMap, ╔Á╔ÁstyleMapInterpolate1, 
+╔Á╔ÁstyleMapInterpolate2, ╔Á╔ÁstyleMapInterpolate3, ╔Á╔ÁstyleMapInterpolate4, ╔Á╔ÁstyleMapInterpolate5, 
+╔Á╔ÁstyleMapInterpolate6, ╔Á╔ÁstyleMapInterpolate7, ╔Á╔ÁstyleMapInterpolate8, ╔Á╔ÁstyleMapInterpolateV, ╔Á╔ÁstyleProp, 
+╔Á╔ÁstylePropInterpolate1, ╔Á╔ÁstylePropInterpolate2, ╔Á╔ÁstylePropInterpolate3, ╔Á╔ÁstylePropInterpolate4, 
+╔Á╔ÁstylePropInterpolate5, ╔Á╔ÁstylePropInterpolate6, ╔Á╔ÁstylePropInterpolate7, ╔Á╔ÁstylePropInterpolate8, 
+╔Á╔ÁstylePropInterpolateV, ╔Á╔ÁsyntheticHostListener, ╔Á╔ÁsyntheticHostProperty, ╔Á╔Átemplate, 
+╔Á╔ÁtemplateRefExtractor, ╔Á╔Átext, ╔Á╔ÁtextInterpolate, ╔Á╔ÁtextInterpolate1, ╔Á╔ÁtextInterpolate2, 
+╔Á╔ÁtextInterpolate3, ╔Á╔ÁtextInterpolate4, ╔Á╔ÁtextInterpolate5, ╔Á╔ÁtextInterpolate6, ╔Á╔ÁtextInterpolate7, 
+╔Á╔ÁtextInterpolate8, ╔Á╔ÁtextInterpolateV, ╔Á╔ÁtrustConstantHtml, ╔Á╔ÁtrustConstantResourceUrl, ╔Á╔ÁtwoWayBindingSet, 
+╔Á╔ÁtwoWayListener, ╔Á╔ÁtwoWayProperty, ╔Á╔ÁvalidateIframeAttribute, ╔Á╔ÁviewQuery, ╔Á╔ÁviewQuerySignal)
+
+[39m[22m

@@ -1,0 +1,43 @@
+<div class="modal-content overflow-hidden" [ngClass]="{'bg-danger text-white': step === 2 && decision === 'offside', 'bg-success text-white': step === 2 && decision === 'clean'}">
+  <div class="modal-header border-0 flex-shrink-0">
+    <h4 class="modal-title w-100 text-center fw-bold fs-3 mt-2">VEREDITO DO VAR</h4>
+    <button type="button" class="btn-close" [ngClass]="{'btn-close-white': step === 2}" aria-label="Close" (click)="close()"></button>
+  </div>
+  <div class="modal-body text-center px-4 pb-4 pt-0 d-flex flex-column" style="min-height: 0;">
+    
+    <!-- Passo 1: Escolha da Decisão -->
+    <div *ngIf="step === 1" class="d-flex flex-column gap-4 py-4 flex-grow-1 justify-content-center">
+      <div *ngIf="decision !== null" class="spinner-border text-primary mx-auto" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+      <ng-container *ngIf="decision === null">
+        <button class="btn btn-danger btn-lg d-flex align-items-center justify-content-center gap-3 py-4 fs-3 fw-bold rounded-4 shadow-sm" (click)="setDecision('offside')">
+          <ng-icon name="hero-hand-thumb-down" size="3rem"></ng-icon>
+          Impedimento Claro
+        </button>
+        <button class="btn btn-success btn-lg d-flex align-items-center justify-content-center gap-3 py-4 fs-3 fw-bold rounded-4 shadow-sm" (click)="setDecision('clean')">
+          <ng-icon name="hero-hand-thumb-up" size="3rem"></ng-icon>
+          Lance Limpo
+        </button>
+      </ng-container>
+    </div>
+
+    <!-- Passo 2: Resultado Colorido -->
+    <div *ngIf="step === 2" class="d-flex flex-column align-items-center flex-grow-1 animate-pop-in" style="min-height: 0;">
+      <h2 class="display-5 fw-bolder text-uppercase mb-3 flex-shrink-0">
+        <ng-icon [name]="decision === 'offside' ? 'hero-x-mark' : 'hero-check'" size="3rem" class="align-middle me-2"></ng-icon>
+        {{ decision === 'offside' ? 'Impedimento' : 'Posição Legal' }}
+      </h2>
+      
+      <div class="result-image-container border border-4 border-white rounded-3 shadow-lg flex-grow-1 w-100" style="min-height: 0;">
+        <img [src]="safeImageUrl" class="img-fluid h-100" alt="Imagem Capturada do Lance" />
+      </div>
+
+      <button class="btn btn-light btn-lg text-dark fw-bold px-5 py-3 mt-4 mb-2 shadow flex-shrink-0" (click)="downloadDecision()">
+        <ng-icon name="hero-arrow-down-tray" size="1.5rem" class="align-middle me-2"></ng-icon>
+        Baixar Imagem Oficial
+      </button>
+    </div>
+
+  </div>
+</div>

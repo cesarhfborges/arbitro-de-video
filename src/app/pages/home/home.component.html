@@ -1,9 +1,10 @@
 <div class="row flex-nowrap h-100">
-  <div *ngIf="!!image" class="col sidenav px-2 pt-2 bg-dark d-flex flex-column gap-2">
+  <div *ngIf="(!!image || !!localVideoSrc)" class="col sidenav px-2 pt-2 bg-dark d-flex flex-column gap-2">
     <p class="text-white">Analise</p>
     <div>
       <span class="text-light">Exibir</span>
-      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.lines" (input)="onChangeOptions()">
+      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.lines"
+        (input)="onChangeOptions()">
         <option value="none">Nenhum</option>
         <option value="area">Area</option>
         <option value="guides">Linha VAR</option>
@@ -13,7 +14,8 @@
 
     <div *ngIf="['all', 'guides'].includes(options.lines)">
       <span class="text-light">Tipo de linha</span>
-      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.offsideLineType" (input)="onChangeOptions()">
+      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.offsideLineType"
+        (input)="onChangeOptions()">
         <option value="horizontal">Horizontal</option>
         <option value="vertical">Vertical</option>
         <option value="all">Todas</option>
@@ -22,8 +24,16 @@
 
     <hr style="color: #ffffff;">
 
+    <div class="group">
+      <label for="handleSize" class="form-label text-light">Área de clique dos vértices</label>
+      <input type="range" [(ngModel)]="options.handleSize" class="form-range" id="handleSize" [step]="1" [min]="20"
+        [max]="40" (input)="onChangeOptions()">
+      <span>{{options.handleSize}}</span>
+    </div>
+
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" [(ngModel)]="options.verticalReference" id="verticalReference" (input)="onChangeOptions()">
+      <input class="form-check-input" type="checkbox" [(ngModel)]="options.verticalReference" id="verticalReference"
+        (input)="onChangeOptions()">
       <label class="form-check-label text-white" for="verticalReference">
         Linha referencia vertical
       </label>
@@ -31,30 +41,14 @@
 
     <div class="group">
       <label for="offsideLineLen" class="form-label text-light">Espessura da linha</label>
-      <input
-        type="range"
-        [(ngModel)]="options.offsideLineLen"
-        class="form-range"
-        id="offsideLineLen"
-        [step]=".05"
-        [min]=".01"
-        [max]="7"
-        (input)="onChangeOptions()"
-      >
+      <input type="range" [(ngModel)]="options.offsideLineLen" class="form-range" id="offsideLineLen" [step]=".05"
+        [min]=".01" [max]="7" (input)="onChangeOptions()">
     </div>
 
     <div class="group">
       <label for="offsideLineSpace" class="form-label text-light">Linha Vertical espacamento</label>
-      <input
-        type="range"
-        [(ngModel)]="options.offsideLineSpace"
-        class="form-range"
-        id="offsideLineSpace"
-        [step]=".1"
-        [min]="0"
-        [max]="5"
-        (input)="onChangeOptions()"
-      >
+      <input type="range" [(ngModel)]="options.offsideLineSpace" class="form-range" id="offsideLineSpace" [step]=".1"
+        [min]="0" [max]="5" (input)="onChangeOptions()">
     </div>
 
     <div *ngIf="['all', 'guides'].includes(options.lines)">
@@ -68,38 +62,21 @@
             </button>
           </div>
         </li>
-        <li
-          class="list-group-item"
-          *ngFor="let offsideLine of offsideLines; let i = index"
-        >
+        <li class="list-group-item" *ngFor="let offsideLine of offsideLines; let i = index">
           <div class="d-flex justify-content-between align-items-center prevent-select">
-            <input type="color" class="rounded" name="head" [(ngModel)]="offsideLine.color" (input)="onChangeOptions()" />
+            <input type="color" class="rounded" name="head" [(ngModel)]="offsideLine.color"
+              (input)="onChangeOptions()" />
             <span (click)="toggleOffsideSelected(i)" class="cursor-pointer">
               <ng-icon *ngIf="options.offside === i" name="hero-check" class="text-primary"></ng-icon>
               Linha {{i}}
             </span>
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-              <button
-                type="button"
-                class="btn"
-                [class.btn-secondary]="!offsideLine.visible"
-                [class.btn-info]="offsideLine.visible"
-                (click)="showHiddenOffside(offsideLine)"
-              >
-                <ng-icon
-                  [name]="offsideLine.visible ? 'hero-eye' : 'hero-eye-slash'"
-                  style="display: flex;"
-                ></ng-icon>
+              <button type="button" class="btn" [class.btn-secondary]="!offsideLine.visible"
+                [class.btn-info]="offsideLine.visible" (click)="showHiddenOffside(offsideLine)">
+                <ng-icon [name]="offsideLine.visible ? 'hero-eye' : 'hero-eye-slash'" style="display: flex;"></ng-icon>
               </button>
-              <button
-                type="button"
-                class="btn btn-danger"
-                (click)="deleteOffsideLine(i)"
-              >
-                <ng-icon
-                  name="hero-trash"
-                  style="display: flex;"
-                ></ng-icon>
+              <button type="button" class="btn btn-danger" (click)="deleteOffsideLine(i)">
+                <ng-icon name="hero-trash" style="display: flex;"></ng-icon>
               </button>
             </div>
           </div>
@@ -111,7 +88,8 @@
 
     <div>
       <span class="text-light">Filtro</span>
-      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.filtro" (input)="onChangeOptions()">
+      <select class="form-select" aria-label="Default select example" [(ngModel)]="options.filtro"
+        (input)="onChangeOptions()">
         <option value="none">Normal</option>
         <option value="invert">Inverter cores</option>
         <option value="grayscale">Escala a de cinza</option>
@@ -130,38 +108,17 @@
 
     <div class="group" *ngIf="options.magnifier">
       <label for="magnifierSize" class="form-label text-light">Tamanho da lupa</label>
-      <input
-        type="range"
-        [(ngModel)]="options.magnifierSize"
-        class="form-range"
-        id="magnifierSize"
-        [step]="1"
-        [min]="50"
-        [max]="500"
-        (input)="onChangeOptions()"
-      >
+      <input type="range" [(ngModel)]="options.magnifierSize" class="form-range" id="magnifierSize" [step]="1"
+        [min]="50" [max]="500" (input)="onChangeOptions()">
     </div>
 
     <div class="group" *ngIf="options.magnifier">
       <label for="magnifierZoom" class="form-label text-light">Nível de zoom</label>
-      <input
-        type="range"
-        [(ngModel)]="options.magnifierZoom"
-        class="form-range"
-        id="magnifierZoom"
-        [step]="1"
-        [min]="1"
-        [max]="20"
-        (input)="onChangeOptions()"
-      >
+      <input type="range" [(ngModel)]="options.magnifierZoom" class="form-range" id="magnifierZoom" [step]="1" [min]="1"
+        [max]="20" (input)="onChangeOptions()">
     </div>
-<!--    <code>-->
-<!--      <pre class="text-white">-->
-<!--        {{ options | json }}-->
-<!--      </pre>-->
-<!--    </code>-->
   </div>
-  <ng-container *ngTemplateOutlet="!!image ? analyse : picker"></ng-container>
+  <ng-container *ngTemplateOutlet="(!!image || !!localVideoSrc) ? analyse : picker"></ng-container>
 </div>
 
 <ng-template #picker>
@@ -169,38 +126,10 @@
     <div class="card">
       <div class="card-body">
         <div class="group">
-          <label for="formFile" class="form-label">Selecione arquivo de imagem</label>
-          <input
-            #inputFile
-            type="file"
-            [accept]="fileTypes"
-            class="form-control"
-            id="formFile"
-            (change)="handleFileInput($event)"
-            [multiple]="false"
-          />
+          <label for="formFile" class="form-label">Selecione arquivo de imagem ou vídeo local</label>
+          <input #inputFile type="file" [accept]="fileTypes" class="form-control" id="formFile"
+            (change)="handleFileInput($event)" [multiple]="false" />
         </div>
-<!--        <p class="text-center mt-3 mb-1">OU</p>-->
-<!--        <div class="group">-->
-<!--          <label for="formURL" class="form-label">Link do video</label>-->
-<!--          <div class="input-group mb-3">-->
-<!--            <input-->
-<!--              #inputURL-->
-<!--              type="url"-->
-<!--              class="form-control"-->
-<!--              id="formURL"-->
-<!--              placeholder="https://location/file.mp4"-->
-<!--              aria-describedby="send-button"-->
-<!--              autocomplete="off"-->
-<!--            >-->
-<!--            <button class="btn btn-outline-secondary" type="button" id="send-button" (click)="openLink()">-->
-<!--              <ng-icon-->
-<!--                name="hero-paper-airplane"-->
-<!--                style="display: flex;"-->
-<!--              ></ng-icon>-->
-<!--            </button>-->
-<!--          </div>-->
-<!--        </div>-->
       </div>
     </div>
   </div>
@@ -210,54 +139,71 @@
     <div class="container-analysis">
       <div class="div1">
         <label for="customRange1">Zoom:</label>
-        <input
-          type="range"
-          class="input-range"
-          id="customRange1"
-          [(ngModel)]="options.imageZ"
-          min="-50"
-          max="500"
-        >
+        <input type="range" class="input-range" id="customRange1" [(ngModel)]="options.imageZ" min="-50" max="500">
       </div>
-      <div
-        class="div2"
-        (appEventZoom)="onZoomIn($event)"
-        (verticalScroll)="onVerticalScroll($event)"
-        (horizontalScroll)="onHorizontalScroll($event)"
-      >
-        <canvas
-          #imageCanvas
-          [style.top]="imageTop"
-          [style.left]="imageLeft"
-          [style.transform]="imageZoom"
-          [appImageZoom]="options.magnifier"
-          [appImageZoomSrc]="image.src"
-          [appImageZoomSize]="options.magnifierSize"
-          [appImageZoomLevel]="options.magnifierZoom"
-        ></canvas>
+      <div #div2Element class="div2" (appEventZoom)="onZoomIn($event)" (verticalScroll)="onVerticalScroll($event)"
+        (horizontalScroll)="onHorizontalScroll($event)">
+        <div *ngIf="localVideoSrc" class="youtube-wrapper" [style.top]="imageTop" [style.left]="imageLeft"
+          [style.transform]="imageZoom" [style.width.px]="mediaWidth" [style.height.px]="mediaHeight"
+          style="position: absolute; pointer-events: none; transform-origin: center center; z-index: 0; background: black;">
+          <video #nativeVideo [src]="localVideoSrc" [width]="mediaWidth" [height]="mediaHeight"
+            style="width: 100%; height: 100%; object-fit: contain;" (timeupdate)="onTimeUpdate()"
+            (ended)="onVideoEnded()"></video>
+        </div>
+        <canvas #imageCanvas [style.top]="imageTop" [style.left]="imageLeft" [style.transform]="imageZoom"
+          [appImageZoom]="options.magnifier && !isPlaying" [appImageZoomVideo]="activeVideoElement"
+          [appImageZoomImage]="image || null" [appImageZoomSize]="options.magnifierSize"
+          [appImageZoomLevel]="options.magnifierZoom"></canvas>
       </div>
       <div class="div3">
         <label for="customRange3">Y:</label>
-        <input
-          type="range"
-          class="input-range"
-          orient="vertical"
-          id="customRange3"
-          [min]="-100"
-          [max]="200"
-          [(ngModel)]="options.imageY"
-        />
+        <input type="range" class="input-range" orient="vertical" id="customRange3" [min]="-100" [max]="200"
+          [(ngModel)]="options.imageY" />
       </div>
-      <div class="div4">
-        <label for="customRange4">X:</label>
-        <input
-          type="range"
-          class="input-range"
-          id="customRange4"
-          [min]="-100"
-          [max]="200"
-          [(ngModel)]="options.imageX"
-        />
+      <div class="div4" style="flex-direction: column; align-items: stretch;">
+        <div *ngIf="localVideoSrc" class="video-controls d-flex align-items-center gap-3 w-100">
+          <button class="btn btn-sm btn-secondary" (click)="stepFrame(false)" title="Retroceder 1 frame">
+            <ng-icon name="hero-chevron-left"></ng-icon>
+          </button>
+          <button class="btn btn-sm btn-primary" (click)="togglePlay()">
+            <ng-icon [name]="isPlaying ? 'hero-pause' : 'hero-play'"></ng-icon>
+          </button>
+          <button class="btn btn-sm btn-secondary" (click)="stepFrame(true)" title="Avançar 1 frame">
+            <ng-icon name="hero-chevron-right"></ng-icon>
+          </button>
+
+          <div class="d-flex align-items-center gap-1">
+            <button class="btn btn-sm btn-secondary" (click)="toggleMute()" title="Mudo">
+              <ng-icon [name]="isMuted || videoVolume === 0 ? 'hero-speaker-x-mark' : 'hero-speaker-wave'"></ng-icon>
+            </button>
+            <input type="range" class="input-range" style="width: 80px;" [min]="0" [max]="100" [(ngModel)]="videoVolume"
+              (input)="onVolumeChange()" title="Volume">
+          </div>
+
+          <div class="d-flex align-items-center gap-1">
+            <small>Vel</small>
+            <select class="form-select form-select-sm" [(ngModel)]="videoPlaybackRate" (change)="onSpeedChange()"
+              style="width: auto;">
+              <option [ngValue]="0.25">0.25x</option>
+              <option [ngValue]="0.5">0.5x</option>
+              <option [ngValue]="1">1x</option>
+              <option [ngValue]="1.5">1.5x</option>
+              <option [ngValue]="2">2x</option>
+            </select>
+          </div>
+
+          <div class="d-flex align-items-center gap-1 flex-grow-1">
+            <small>Progresso</small>
+            <input type="range" class="input-range w-100" [min]="0" [max]="videoDuration" [(ngModel)]="videoProgress"
+              (input)="onSeek()" title="Progresso">
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 w-100">
+          <label for="customRange4">X:</label>
+          <input type="range" class="input-range w-100" id="customRange4" [min]="-100" [max]="200"
+            [(ngModel)]="options.imageX" />
+        </div>
       </div>
     </div>
   </div>

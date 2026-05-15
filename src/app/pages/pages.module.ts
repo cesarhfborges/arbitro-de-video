@@ -7,8 +7,8 @@ import {PagesRoutingModule} from './pages-routing.module';
 import {HomeComponent} from './home/home.component';
 import {LayoutComponent} from './layout.component';
 import {ReactiveFormsModule} from '@angular/forms';
-import {NgIconComponent} from '@ng-icons/core';
-
+import { NgIconComponent, NgIconsModule } from '@ng-icons/core';
+import { heroPlay, heroPause, heroArrowDownTray, heroChevronLeft, heroChevronRight, heroSpeakerXMark, heroSpeakerWave, heroHandThumbUp, heroHandThumbDown, heroCheck, heroXMark } from '@ng-icons/heroicons/outline';
 
 @NgModule({
   declarations: [
@@ -22,7 +22,9 @@ import {NgIconComponent} from '@ng-icons/core';
     CoreModule,
     SharedModule,
     ReactiveFormsModule,
-    NgIconComponent
+    NgIconComponent,
+    NgIconsModule.withIcons({ heroPlay, heroPause, heroArrowDownTray, heroChevronLeft, heroChevronRight, heroSpeakerXMark, heroSpeakerWave, heroHandThumbUp, heroHandThumbDown, heroCheck, heroXMark }),
+    PagesRoutingModule
   ]
 })
 export class PagesModule {

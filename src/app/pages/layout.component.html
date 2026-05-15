@@ -8,11 +8,13 @@
       <div *ngIf="showClose | async">
         <ul class="nav gap-4">
           <li class="nav-item d-flex align-items-center">
-            <button
-              type="button"
-              class="btn btn-outline-info action-button"
-              (click)="exportImage()"
-            >
+            <button type="button" class="btn btn-warning action-button fw-bold me-2 shadow-sm"
+              (click)="openDecisionModal()">
+              <ng-icon name="hero-presentation-chart-line" style="display: flex; margin-right: 4px;"></ng-icon> Decisão
+            </button>
+          </li>
+          <li class="nav-item d-flex align-items-center">
+            <button type="button" class="btn btn-outline-info action-button" (click)="exportImage()">
               <ng-icon name="hero-arrow-down-tray" style="display: flex;"></ng-icon> Exportar
             </button>
           </li>
@@ -28,37 +30,37 @@
 
 
 
-<!--    <div class="row" [style.height.px]="38">-->
-<!--      <div class="col d-flex justify-content-center align-items-center gap-3" [style.max-width.px]="280">-->
-<!--        <img ngSrc="assets/icons/VAR_System_Logo.svg" alt="logotipo" [height]="30" width="30">-->
-<!--        <span>Arbitro de Video (BETA)</span>-->
-<!--      </div>-->
-<!--      <div class="col d-flex justify-content-end pe-4">-->
-<!--        <ul class="nav gap-4">-->
-<!--          <li class="nav-item d-flex align-items-center" *ngIf="showClose | async">-->
-<!--            <button-->
-<!--              type="button"-->
-<!--              class="btn btn-outline-info action-button"-->
-<!--              (click)="exportImage()"-->
-<!--            >-->
-<!--              <ng-icon name="hero-arrow-down-tray" style="display: flex;"></ng-icon> Exportar-->
-<!--            </button>-->
-<!--          </li>-->
-<!--          <li class="nav-item d-flex align-items-center" *ngIf="showClose | async">-->
-<!--            <button type="button" class="btn btn-outline-danger action-button" (click)="closeImage()">-->
-<!--              <ng-icon name="hero-x-mark" style="display: flex;"></ng-icon> Fechar-->
-<!--            </button>-->
-<!--          </li>-->
-<!--        </ul>-->
-<!--      </div>-->
-<!--    </div>-->
+    <!--    <div class="row" [style.height.px]="38">-->
+    <!--      <div class="col d-flex justify-content-center align-items-center gap-3" [style.max-width.px]="280">-->
+    <!--        <img ngSrc="assets/icons/VAR_System_Logo.svg" alt="logotipo" [height]="30" width="30">-->
+    <!--        <span>Arbitro de Video (BETA)</span>-->
+    <!--      </div>-->
+    <!--      <div class="col d-flex justify-content-end pe-4">-->
+    <!--        <ul class="nav gap-4">-->
+    <!--          <li class="nav-item d-flex align-items-center" *ngIf="showClose | async">-->
+    <!--            <button-->
+    <!--              type="button"-->
+    <!--              class="btn btn-outline-info action-button"-->
+    <!--              (click)="exportImage()"-->
+    <!--            >-->
+    <!--              <ng-icon name="hero-arrow-down-tray" style="display: flex;"></ng-icon> Exportar-->
+    <!--            </button>-->
+    <!--          </li>-->
+    <!--          <li class="nav-item d-flex align-items-center" *ngIf="showClose | async">-->
+    <!--            <button type="button" class="btn btn-outline-danger action-button" (click)="closeImage()">-->
+    <!--              <ng-icon name="hero-x-mark" style="display: flex;"></ng-icon> Fechar-->
+    <!--            </button>-->
+    <!--          </li>-->
+    <!--        </ul>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </header>
   <main class="container-fluid">
-      <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
   </main>
-<!--  <footer class="border-top">-->
-<!--    <div class="container-fluid py-2">-->
-<!--      <p class="text-muted text-center p-0 m-0">Digital VAR</p>-->
-<!--    </div>-->
-<!--  </footer>-->
+  <!--  <footer class="border-top">-->
+  <!--    <div class="container-fluid py-2">-->
+  <!--      <p class="text-muted text-center p-0 m-0">Digital VAR</p>-->
+  <!--    </div>-->
+  <!--  </footer>-->
 </div>
