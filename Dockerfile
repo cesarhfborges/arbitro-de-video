@@ -6,7 +6,7 @@ ENV NODE_OPTIONS="--max-old-space-size=768"
 
 COPY package.json package-lock.json ./
 
-RUN npm install --silent
+RUN npm install --silent --legacy-peer-deps
 
 COPY . .
 
