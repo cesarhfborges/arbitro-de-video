@@ -24,7 +24,8 @@ import {
     heroChevronDoubleLeft,
     heroChevronDoubleRight,
     heroPaperAirplane,
-    heroArrowDownTray
+    heroArrowDownTray,
+    heroPresentationChartLine
 } from '@ng-icons/heroicons/outline';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { AppRoutingModule } from './app-routing.module';
@@ -68,7 +69,8 @@ import { AppComponent } from './app.component';
             heroChevronDoubleLeft,
             heroChevronDoubleRight,
             heroPaperAirplane,
-            heroArrowDownTray
+            heroArrowDownTray,
+            heroPresentationChartLine
         }),
         TranslateModule.forRoot({
             loader: {
